@@ -22,3 +22,6 @@ receiverAddress = 'BNPAFRPP...' and messageType/code = 'MT012’ and TRN = ‘Te
 '(.*[{]4:.*103[:]EBA.*[{]5:.*|.*[{]4:.*103[:]ERP.*[{]5:.*)’
 then 
 codeRoutage = CHG02
+
+# routing example
+https://github.com/tarilabs/quarkus-content-based-routing

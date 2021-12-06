@@ -30,30 +30,31 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoApplication.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) // reset spring context after each test method
-public class TrafficViolationTest {
+public class RouterTest {
 
     @LocalServerPort
     private int port;
 
     @Test
-    public void testEvaluateTrafficViolation() {
-        RestAssured.port = port;
+    public void testEvaluateRouter() {
         given()
                .body("{\n" +
-                     "    \"Driver\": {\n" +
-                     "        \"Points\": 2\n" +
-                     "    },\n" +
-                     "    \"Violation\": {\n" +
-                     "        \"Type\": \"speed\",\n" +
-                     "        \"Actual Speed\": 120,\n" +
-                     "        \"Speed Limit\": 100\n" +
+                     "    \"event\": {\n" +
+                     "        \"receiverAddress\": \"BNPAFRPP\",\n" +
+                     "        \"messageType\": {\n" +
+                     "          \"code\": \"MT012\"" +
+                     "          },\n" +
+                     "        \"TRN\": \"Test\",\n" +
+                     "        \"document\": {\n" +
+                     "          \"data\": \"r{4:5103:EBA7{5:6\"" +
+                     "          }\n" +
                      "    }\n" +
                      "}")
                .contentType(ContentType.JSON)
           .when()
-               .post("/Traffic Violation")
+               .post("/router")
           .then()
              .statusCode(200)
-               .body("'Should the driver be suspended?'", is("No"));
+               .body("codeRoutage", is("CHG02"));
     }
 }
