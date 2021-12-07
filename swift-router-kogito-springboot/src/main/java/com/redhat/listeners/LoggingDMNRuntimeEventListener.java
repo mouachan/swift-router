@@ -54,7 +54,8 @@ class LoggingDMNRuntimeEventListener implements DMNRuntimeEventListener {
     public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
         log("node   : "+event.getNodeName());
         log("   table  : "+event.getDecisionTableName());
-        log("       line number : "+event.getSelected().get(0));
+        for(int i=0; i<event.getSelected().size();i++)
+            log("       line number : "+event.getSelected().get(i));
     }
 
     @Override

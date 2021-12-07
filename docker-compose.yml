@@ -1,12 +1,20 @@
 version: '2'
 
 services:
-  swift-router-kogito-quarkus:
+  # swift-router-kogito-quarkus:
+  #   build:
+  #     context: ./swift-router-kogito-quarkus
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 8080:8080
+
+  swift-router-kogito-springboot:
     build:
-      context: ./swift-router-kogito-quarkus
+      context: ./swift-router-kogito-springboot
       dockerfile: Dockerfile
     ports:
       - 8080:8080
+
 
   prometheus:
     image: prom/prometheus:v2.8.0
