@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.redhat;
+package com.redhat;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication(scanBasePackages={"org.redhat.**", "org.kie.kogito.**", "http**"})
+@SpringBootApplication(scanBasePackages={"com.redhat.**", "org.kie.kogito.**", "http**"})
 public class KogitoApplication {
 
     public static void main(String[] args) {

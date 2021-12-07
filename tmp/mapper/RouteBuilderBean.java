@@ -5,23 +5,24 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.camel.AggregationStrategy;
+import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import com.redhat.utils.camel3.KogitoProcessorFactory;
+//import com.redhat.utils.camel3.KogitoProcessorFactory;
 import com.redhat.utils.camel3.WhereToAggregationStrategy; 
 
 @ApplicationScoped
 public class RouteBuilderBean extends RouteBuilder {
 
-    @Inject
-    KogitoProcessorFactory kogitoProcessor;
+    // @Inject
+    // KogitoProcessorFactory kogitoProcessor;
 
     Processor kogitoDMNEvaluate;
     
-    @PostConstruct
-    public void init() {
-        kogitoDMNEvaluate = kogitoProcessor.decisionProcessor("ns1", "router");
-    }
+    // @PostConstruct
+    // public void init() {
+    //     kogitoDMNEvaluate = kogitoProcessor.decisionProcessor("ns1", "router");
+    // }
 
     AggregationStrategy aggregationStrategy = new WhereToAggregationStrategy("CATCH_ALL");
 
@@ -30,8 +31,10 @@ public class RouteBuilderBean extends RouteBuilder {
 
         from("kafka:input")
             .to("atlasmap:atlasmap-mapping.adm").unmarshal().json()
-            .process(kogitoDMNEvaluate) // <== Rules as DMN decisions to decide which Kakfa topic queue to be sent to.
-            .setHeader("topicsHeader", simple("${body[topic names]}"))
+            //.process(kogitoDMNEvaluate) // <== Rules as DMN decisions to decide which Kakfa topic queue to be sent to.
+            .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+            .setHeader("Content-Type", constant("application/json") )
+            .to("http://localhost:8080/router")
             .to("log:org.drools.demo?level=DEBUG&showAll=true&multiline=true")
             .to("kafka:output")
         ;
@@ -49,6 +52,6 @@ public class RouteBuilderBean extends RouteBuilder {
     //           .log("Received : \"${body}\"")
     //           .to("atlasmap:atlasmap-mapping.adm").unmarshal().json()
     //           .process(kogitoDMNEvaluate); // <== Rules as DMN decisions to decide which Kakfa topic queue to be sent to.
-  }
+  //}
     }
 }

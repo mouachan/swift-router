@@ -52,7 +52,9 @@ class LoggingDMNRuntimeEventListener implements DMNRuntimeEventListener {
 
     @Override
     public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
-        log("node name  "+event.getNodeName() + " table name "+event.getDecisionTableName()+" line "+event.getSelected().get(0));
+        log("node   : "+event.getNodeName());
+        log("   table  : "+event.getDecisionTableName());
+        log("       line number : "+event.getSelected().get(0));
     }
 
     @Override
@@ -68,5 +70,6 @@ class LoggingDMNRuntimeEventListener implements DMNRuntimeEventListener {
     private void log(String event) {
         LOG.info("{} received by {}", event, name);
     }
+
 
 }

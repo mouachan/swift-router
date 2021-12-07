@@ -1,8 +1,26 @@
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="ns1" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_6E309659-2DF8-4486-9D5C-3B230F7EEDC2" name="router" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="ns1">
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_6E309659-2DF8-4486-9D5C-3B230F7EEDC2" name="router" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
   <dmn:extensionElements/>
+  <dmn:itemDefinition id="_163D6AD6-72D3-4D06-904F-DF1C893256CC" name="tEvent" isCollection="false">
+    <dmn:itemComponent id="_AE012066-3BA4-4FF9-9241-A814A92BD8A3" name="receiverAddress" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_77DF9511-7A93-4FEA-B44E-E1F0E76380D7" name="document" isCollection="false">
+      <dmn:itemComponent id="_ED9F4DB8-A988-4303-B3CF-1C35FDAF2DD5" name="data" isCollection="false">
+        <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_E63E974D-0DD0-4251-92B2-C311E0E66962" name="messageType" isCollection="false">
+      <dmn:itemComponent id="_2626770E-2738-423B-81F8-2AB106CCAA84" name="code" isCollection="false">
+        <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_DE519903-D5B5-4545-94BE-659E2AF04F5E" name="TRN" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
   <dmn:inputData id="_9B58834D-936A-481D-A06C-C95085BBFF67" name="event">
     <dmn:extensionElements/>
-    <dmn:variable id="_2C930D66-B7FB-4223-9946-A2B009C4D638" name="event"/>
+    <dmn:variable id="_2C930D66-B7FB-4223-9946-A2B009C4D638" name="event" typeRef="tEvent"/>
   </dmn:inputData>
   <dmn:decision id="_3635FC4D-9AA4-4B65-BB29-21A7868EE64D" name="codeRoutage">
     <dmn:extensionElements/>
@@ -61,7 +79,7 @@
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef="_203B5461-D0D6-4E73-8A3F-CE6429578375">
             <kie:width>50</kie:width>
-            <kie:width>100</kie:width>
+            <kie:width>300</kie:width>
             <kie:width>200</kie:width>
             <kie:width>100</kie:width>
             <kie:width>424</kie:width>
@@ -70,16 +88,16 @@
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape xmlns:p0="https://kiegroup.org/dmn/_DEFB4A39-D84C-44EF-B4A0-785CFD752BEE" id="dmnshape-drg-_9B58834D-936A-481D-A06C-C95085BBFF67" dmnElementRef="p0:_9B58834D-936A-481D-A06C-C95085BBFF67" isCollapsed="false">
+      <dmndi:DMNShape xmlns:p0="ns1" id="dmnshape-drg-_9B58834D-936A-481D-A06C-C95085BBFF67" dmnElementRef="p0:_9B58834D-936A-481D-A06C-C95085BBFF67" isCollapsed="false">
         <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255"/>
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
           <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="410" y="321" width="100" height="50"/>
+        <dc:Bounds x="410" y="322" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape xmlns:p1="https://kiegroup.org/dmn/_DEFB4A39-D84C-44EF-B4A0-785CFD752BEE" id="dmnshape-drg-_3635FC4D-9AA4-4B65-BB29-21A7868EE64D" dmnElementRef="p1:_3635FC4D-9AA4-4B65-BB29-21A7868EE64D" isCollapsed="false">
+      <dmndi:DMNShape xmlns:p1="ns1" id="dmnshape-drg-_3635FC4D-9AA4-4B65-BB29-21A7868EE64D" dmnElementRef="p1:_3635FC4D-9AA4-4B65-BB29-21A7868EE64D" isCollapsed="false">
         <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255"/>
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
@@ -88,8 +106,8 @@
         <dc:Bounds x="410" y="191" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge xmlns:p2="https://kiegroup.org/dmn/_DEFB4A39-D84C-44EF-B4A0-785CFD752BEE" id="dmnedge-drg-_DB958BFD-993E-4493-BBB6-00FECCB2C5D0-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="p2:_DB958BFD-993E-4493-BBB6-00FECCB2C5D0">
-        <di:waypoint x="460" y="321"/>
+      <dmndi:DMNEdge xmlns:p2="ns1" id="dmnedge-drg-_DB958BFD-993E-4493-BBB6-00FECCB2C5D0-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="p2:_DB958BFD-993E-4493-BBB6-00FECCB2C5D0">
+        <di:waypoint x="460" y="322"/>
         <di:waypoint x="460" y="241"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>

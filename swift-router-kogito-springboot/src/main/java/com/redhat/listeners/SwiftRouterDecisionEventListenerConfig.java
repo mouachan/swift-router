@@ -1,9 +1,9 @@
 package com.redhat.listeners;
 
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.kie.kogito.dmn.config.CachedDecisionEventListenerConfig;
+import org.springframework.stereotype.Component;
+
 
 /**
  * This class demonstrates one of the two methods offered by Kogito to inject custom
@@ -20,7 +20,7 @@ import org.kie.kogito.dmn.config.CachedDecisionEventListenerConfig;
  * The second injection method is explained in {@link ExampleDMNRuntimeEventListener}.
  * All the listeners instantiated with both methods will be injected during the application startup phase.
  */
-@ApplicationScoped
+@Component
 public class SwiftRouterDecisionEventListenerConfig extends CachedDecisionEventListenerConfig {
 
     public SwiftRouterDecisionEventListenerConfig() {

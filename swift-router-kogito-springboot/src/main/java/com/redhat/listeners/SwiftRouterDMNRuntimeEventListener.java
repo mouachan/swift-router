@@ -1,6 +1,7 @@
 package com.redhat.listeners;
 
-import javax.enterprise.context.ApplicationScoped;
+
+import org.springframework.stereotype.Component;
 
 /**
  * This class demonstrates one of the two methods offered by Kogito to inject custom
@@ -13,7 +14,7 @@ import javax.enterprise.context.ApplicationScoped;
  * The second injection method is explained in {@link ExampleDecisionEventListenerConfig}.
  * All the listeners instantiated with both methods will be injected during the application startup phase.
  */
-@ApplicationScoped
+@Component
 public class SwiftRouterDMNRuntimeEventListener extends LoggingDMNRuntimeEventListener {
 
     public SwiftRouterDMNRuntimeEventListener() {
