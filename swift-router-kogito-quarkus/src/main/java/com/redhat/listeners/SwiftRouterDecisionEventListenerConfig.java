@@ -24,7 +24,7 @@ import org.kie.kogito.dmn.config.CachedDecisionEventListenerConfig;
 public class SwiftRouterDecisionEventListenerConfig extends CachedDecisionEventListenerConfig {
 
     public SwiftRouterDecisionEventListenerConfig() {
-        //register(new LoggingDMNRuntimeEventListener("SwiftRouterDecisionEventListenerConfig's inner listener #1"));
+        register(new LoggingDMNRuntimeEventListener("SwiftRouterDecisionEventListener"));
     }
 
 }

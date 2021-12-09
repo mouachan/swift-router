@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swift-router-kogito-quarkus
+    version: v1
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/instance: swift-router-kogito-quarkus
+    app.kubernetes.io/part-of: swift-router-kogito-quarkus-app
+    app.openshift.io/runtime: quarkus
+  annotations:
+    app.openshift.io/vcs-ref: main
+    app.openshift.io/vcs-uri: 'https://github.com/mouachan/saga-orchestration'
+  name: swift-router-kogito-quarkus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swift-router-kogito-quarkus
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: swift-router-kogito-quarkus
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/scheme: "http"
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - image: quay.io/mouachan/swift-router-kogito-quarkus:1.0.0-SNAPSHOT
+          imagePullPolicy: Always
+          name: swift-router-kogito-quarkus
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+            - containerPort: 8778
+              name: jolokia
+              protocol: TCP
+          # env:
+          #   - name: KAFKA_BOOTSTRAP_SERVERS
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: order-saga-properties
+          #         key: kafka.bootstrap.servers
+          readinessProbe:
+            httpGet:
+              path: "q/health/ready"
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: "q/health/live"
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+          securityContext:
+            privileged: false
+      imagePullSecrets:
+        - name: quay-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: swift-router-kogito-quarkus
+  labels:
+    app: swift-router-kogito-quarkus
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app: swift-router-kogito-quarkus
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: swift-router-kogito-quarkus
+  name: swift-router-kogito-quarkus
+spec:
+  port:
+    targetPort: http
+  to:
+    kind: Service
+    name: swift-router-kogito-quarkus
+    weight: 100
+  tls:
+    termination: edge
+  wildcardPolicy: None

@@ -9,6 +9,6 @@ scrape_configs:
 
     static_configs:
       - targets: ['swift-router-kogito-quarkus:8080'] 
-      - targets: ['swift-router-kogito-springboot:8080'] 
+      - targets: ['swift-router-kogito-springboot:8180'] 
         
         #['host.docker.internal:8180']

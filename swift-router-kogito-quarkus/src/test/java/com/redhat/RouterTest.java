@@ -20,11 +20,10 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasItems;
 
 @QuarkusTest
 public class RouterTest {
-    
     @Test
     public void testEvaluateRouter() {
         given()
@@ -45,6 +44,6 @@ public class RouterTest {
                .post("/router")
           .then()
              .statusCode(200)
-               .body("codeRoutage", is("CHG02"));
+               .body("codeRoutage", hasItems("CHG03"));
     }
 }

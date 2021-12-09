@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Set;
 
 @RegisterRestClient
-public interface SwiftRemoteService {
+public interface SwiftQuarkusRemoteService {
 
     @POST
     @Path("/router")
-    String getCodesRoutage(Message message);
+    String callDMNCodesRoutage(Message message);
 
 
 }

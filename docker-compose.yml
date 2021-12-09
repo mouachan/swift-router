@@ -1,19 +1,21 @@
 version: '2'
 
 services:
-  # swift-router-kogito-quarkus:
-  #   build:
-  #     context: ./swift-router-kogito-quarkus
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - 8080:8080
+  swift-router-kogito-quarkus:
+    build:
+      context: ./swift-router-kogito-quarkus
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
 
   swift-router-kogito-springboot:
     build:
       context: ./swift-router-kogito-springboot
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - 8180:8080
+    environment:
+      - JVM_OPTS=-Xmx8g -Xms8g -XX:MaxPermSize=1024m
 
 
   prometheus:
