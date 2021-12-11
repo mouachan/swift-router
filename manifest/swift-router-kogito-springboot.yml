@@ -57,7 +57,7 @@ spec:
             privileged: false
           resources:
             requests:
-              memory: "8Gi"
+              memory: "1Gi"
               cpu: "200m"
             limits:
               memory: "8Gi"

@@ -40,15 +40,9 @@ spec:
             - containerPort: 8778
               name: jolokia
               protocol: TCP
-          # env:
-          #   - name: KAFKA_BOOTSTRAP_SERVERS
-          #     valueFrom:
-          #       configMapKeyRef:
-          #         name: order-saga-properties
-          #         key: kafka.bootstrap.servers
           readinessProbe:
             httpGet:
-              path: "q/health/ready"
+              path: "/actuator/health/readiness"
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 5
@@ -56,7 +50,7 @@ spec:
             timeoutSeconds: 2
           livenessProbe:
             httpGet:
-              path: "q/health/live"
+              path: "/actuator/health/liveness"
               port: 8080
               scheme: HTTP
             initialDelaySeconds: 5
@@ -64,6 +58,13 @@ spec:
             timeoutSeconds: 2
           securityContext:
             privileged: false
+          resources:
+            requests:
+              memory: "6Gi"
+              cpu: "200m"
+            limits:
+              memory: "6Gi"
+              cpu: "400m" 
       imagePullSecrets:
         - name: quay-secret
 ---

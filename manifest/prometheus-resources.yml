@@ -1,0 +1,26 @@
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus-springboot
+spec:
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: swift-router-kogito-springboot
+  podMonitorSelector:
+    matchLabels:
+      app: swift-router-kogito-springboot
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  name: prometheus-quarkus
+spec:
+  serviceAccountName: prometheus
+  serviceMonitorSelector:
+    matchLabels:
+      app: swift-router-kogito-quarkus
+  podMonitorSelector:
+    matchLabels:
+        app: swift-router-kogito-quarkus
