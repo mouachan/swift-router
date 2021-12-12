@@ -18,6 +18,9 @@ You will need:
   - Maven 3.6.2+ installed
   - Docker 19+ (only if you want to run the integration tests and/or you want to use the `docker-compose` script provided in this example).
   - Openshift cli to deploy on Openshift
+  - Red Hat Business Automation Operator
+  - Grafana Operator
+  - Red Hat Integration - AMQ Streams
 
 ### Archetype
 
@@ -40,16 +43,78 @@ mvn archetype:generate \
 -DarchetypeVersion=1.5.0.redhat-00006 \
 -Dversion=1.0-SNAPSHOT
 ```
+### Deploy Authoring/Execution envrionement
 
+Create Authoring and Execution service in a dev environment
+``` 
+oc apply -f ./manifest/rhdm-authoring.yml
+```
+
+get Decision central url 
+```
+oc get route swift-router-svc-design-time-rhdmcentr -o json | jq '.spec.host'
+```
+get kie-server url
+```
+oc get route swift-router-svc-design-time-kieserver -o json | jq '.spec.host'
+```
+
+Log into Decision Central using dmAdmin/dmAdmin
+
+
+Business Central API : 
+```
+echo $(oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host')/docs
+```
+
+Kie-server API : 
+```
+echo $(oc get route swift-router-svc-design-time-kieserver- -o json | jq -r '.spec.host')/docs
+```
+
+
+
+call router decision service  
+Container-ID : DMNRouter_1.0.0-SNAPSHOT
+payload 
+```json
+    {
+    "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "model-name": "router",
+    "event" : {
+            "receiverAddress":"BNPAFRPP",
+            "messageType":{
+                "code":"MT012"
+            },
+            "TRN":"Test",
+            "document":{
+                "data":"r{4:5103:EBA7{5:6"
+            }
+        }
+    }
+```
+
+```json
+curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router.apps.cluster-nq8h5.nq8h5.sandbox1017.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"BNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
+```
 ### Compile and Run in Local Dev Mode
 
-### build & deploy to openshift
+### build & deploy decisions services as microservices to openshift
+
+
 
 log to openshift
 ```
 https://api.openshift_url:6443 -u login -p password 
 ```
-
+create kafka cluster
+```
+oc apply -f ./manifest/kafka.yml
+````
+deploy kafdrop
+```
+oc apply -f ./manifest/kafdrop.yml
+```
 build Quarkus Kogito decision service
 ```
 cd swift-router-kogito-quarkus

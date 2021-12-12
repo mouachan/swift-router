@@ -1,0 +1,9 @@
+apiVersion: app.kiegroup.org/v2
+kind: KieApp
+metadata:
+  name: swift-router-svc-design-time
+spec:
+  environment: rhdm-authoring
+  commonConfig:
+    adminUser: dmAdmin
+    adminPassword: dmAdmin
