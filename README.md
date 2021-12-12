@@ -1,35 +1,65 @@
 # swift-router
 
-# generate the project on quarkus
+
+
+## Description
+
+This demo is a further iteration of rule-based SWIFT message routing; using Quarkus, Springboot, Kogito Drools DMN Engine.
+
+## Objectives
+
+Showcase the ability to route data real time through DMN rules maintained by business users and how to enable and consume the runtime metrics monitoring
+
+### Prerequisites
+ 
+You will need:
+  - Java 11+ installed 
+  - Environment variable JAVA_HOME set accordingly
+  - Maven 3.6.2+ installed
+  - Docker 19+ (only if you want to run the integration tests and/or you want to use the `docker-compose` script provided in this example).
+  - Openshift cli to deploy on Openshift
+
+### Archetype
+
+mvn archetype to generate kogito-quarkus application
+```mvn
 mvn archetype:generate \
 -DarchetypeGroupId=org.kie.kogito \
 -DarchetypeArtifactId=kogito-quarkus-dm-archetype \
 -DgroupId=com.redhat -DartifactId=swift-router-kogito-quarkus \
 -DarchetypeVersion=1.5.0.redhat-00006 \
 -Dversion=1.0-SNAPSHOT
+```
+mvn archetype to generate kogito-springboot application
 
-# generate the project on springboot
+```mvn
 mvn archetype:generate \
 -DarchetypeGroupId=org.kie.kogito \
 -DarchetypeArtifactId=kogito-springboot-dm-archetype \
 -DgroupId=org.redhat -DartifactId=swift-router-kogito-springboot \
 -DarchetypeVersion=1.5.0.redhat-00006 \
 -Dversion=1.0-SNAPSHOT
+```
 
-# build & deploy to openshift
+### Compile and Run in Local Dev Mode
+
+### build & deploy to openshift
+
 log to openshift
 ```
-oc login 
+https://api.openshift_url:6443 -u login -p password 
 ```
 
-Quarkus
+build Quarkus Kogito decision service
 ```
-~/projects/swift-router/swift-router-kogito-quarkus main* ❯ mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+cd swift-router-kogito-quarkus
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
 ```       
 
-Springboot
+build and deploy Springboot Kogito decision service 
 ```
-~/projects/swift-router/swift-router-kogito-springboot main* ❯ mvn clean fabric8:deploy -Popenshift -DskipTests
+cd ../swift-router-kogito-springboot
+mvn clean fabric8:deploy -Popenshift -DskipTests
 ```  
 get routes
 ```
@@ -42,13 +72,21 @@ create the configmap
 oc create configmap swift-router-cm --from-env-file=../manifest/swift-cm.properties --dry-run -o yaml | oc apply -f -   
 ```
 
-rest-client
+build and deploy quarkus rest client to call the quarkus decision service
 ```
- mvn clean package -Dquarkus.kubernetes.deploy=true  
-````
-
-Grafana
-In order to connect grafana to Openshift monitoring :
+ cd ../swift-rest-quarkus-client
+ mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-rest-quarkus-client   
+```
+build and deploy quarkus rest client to call the springboot decision service
+```
+ cd ../swift-rest-springboot-client
+ mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-rest-quarkus-client   
+```
+Configure OpenShift Container Platform monitoring to scrape metrics from the /metrics endpoints of swift-router-kogito-quarkus and swift-router-kogito-springboot applications 
+```
+oc apply -f ../manifest/prometheus-service-monitor-openshift.yml
+```
+execute the following instructions in order to connect grafana to Openshift monitoring :
 
     grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
     ```
@@ -80,17 +118,11 @@ In order to connect grafana to Openshift monitoring :
         type: prometheus
         url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
     name: grafana-prometheus-datasource
-  ```
+    ```
   copy the YAML in ../manifest/grafana-datasouce.ymlfile
   ```
     oc apply -f ../manifest/grafana-datasouce.yml
- 
-# rule sample
-when 
-receiverAddress = 'BNPAFRPP...' and messageType/code = 'MT012’ and TRN = ‘Test…’ and document/data =
-'(.*[{]4:.*103[:]EBA.*[{]5:.*|.*[{]4:.*103[:]ERP.*[{]5:.*)’
-then 
-codeRoutage = CHG02
+  ```
 
 # routing example
 https://github.com/tarilabs/quarkus-content-based-routing
