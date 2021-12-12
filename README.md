@@ -88,41 +88,41 @@ oc apply -f ../manifest/prometheus-service-monitor-openshift.yml
 ```
 execute the following instructions in order to connect grafana to Openshift monitoring :
 
-    grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
-    ```
-     oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount
-    ```
+grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
+```sh
+oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount
+```
 
-    Get the token 
-    ```
-     oc serviceaccounts get-token grafana-serviceaccount
-    ``` 
-    in the below YAML, substitute ${BEARER_TOKEN} with the output of the command above 
-    ```yaml
-        apiVersion: integreatly.org/v1alpha1
-        kind: GrafanaDataSource
-        metadata:
-        name: grafana-prometheus-datasource
-        spec:
-        datasources:
-            - access: proxy
-            editable: true
-            isDefault: true
-            jsonData:
-                httpHeaderName1: 'Authorization'
-                timeInterval: 5s
-                tlsSkipVerify: true
-            name: Prometheus
-            secureJsonData:
-                httpHeaderValue1: 'Bearer ${BEARER_TOKEN}'
-            type: prometheus
-            url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
-        name: grafana-prometheus-datasource
-    ```
-  copy the YAML in ../manifest/grafana-datasouce.ymlfile
-  ```
-    oc apply -f ../manifest/grafana-datasouce.yml
-  ```
+Get the token 
+```
+    oc serviceaccounts get-token grafana-serviceaccount
+``` 
+in the below YAML, substitute ${BEARER_TOKEN} with the output of the command above 
+```yaml
+    apiVersion: integreatly.org/v1alpha1
+    kind: GrafanaDataSource
+    metadata:
+    name: grafana-prometheus-datasource
+    spec:
+    datasources:
+        - access: proxy
+        editable: true
+        isDefault: true
+        jsonData:
+            httpHeaderName1: 'Authorization'
+            timeInterval: 5s
+            tlsSkipVerify: true
+        name: Prometheus
+        secureJsonData:
+            httpHeaderValue1: 'Bearer ${BEARER_TOKEN}'
+        type: prometheus
+        url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
+    name: grafana-prometheus-datasource
+```
+copy the YAML in ../manifest/grafana-datasouce.yml file
+```
+oc apply -f ../manifest/grafana-datasouce.yml
+```
 
 # Quarkus content based routing
 https://github.com/tarilabs/quarkus-content-based-routing
