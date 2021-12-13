@@ -29,13 +29,15 @@ public class RouterTest {
         given()
                .body("{\n" +
                      "    \"event\": {\n" +
-                     "        \"receiverAddress\": \"BNPAFRPP\",\n" +
+                     "        \"direction\":\"DISTRIBUTION\","+
+                     "        \"networkProtocol\":\"Swift-FIN\", "+
+                     "        \"receiverAddress\": \"GEBABEBBAAA\",\n" +
+                     "        \"senderAddress\":\"ECMSBEBBCCB\","+
                      "        \"messageType\": {\n" +
-                     "          \"code\": \"MT012\"" +
+                     "          \"code\": \"MT598\"" +
                      "          },\n" +
-                     "        \"TRN\": \"Test\",\n" +
                      "        \"document\": {\n" +
-                     "          \"data\": \"r{4:5103:EBA7{5:6\"" +
+                     "          \"data\": \"55{4:33:20C:AA4444//BKL111{5:RE\"" +
                      "          }\n" +
                      "    }\n" +
                      "}")
@@ -44,6 +46,6 @@ public class RouterTest {
                .post("/router")
           .then()
              .statusCode(200)
-               .body("codeRoutage", hasItems("CHG03"));
+               .body("codeRoutage", hasItems("CAL06"));
     }
 }

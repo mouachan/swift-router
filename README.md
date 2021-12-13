@@ -151,7 +151,7 @@ Configure OpenShift Container Platform monitoring to scrape metrics from the /me
 ```
 oc apply -f ../manifest/prometheus-service-monitor-openshift.yml
 ```
-execute the following instructions in order to connect grafana to Openshift monitoring :
+execute the following instructions in order to connect grafana to Openshift monitoring (more details https://www.redhat.com/en/blog/custom-grafana-dashboards-red-hat-openshift-container-platform-4):
 
 grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
 ```sh

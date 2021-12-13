@@ -62,16 +62,19 @@ public class SwiftApp implements QuarkusApplication{
         }
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
+        sbCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
         LOGGER.infof("SpringBoot - Invoking code routage decision service for %s  messages tooks %s s",nbmessages,elapsedTime/1000);
         return 0;
     }
 
     private Message createRandomMessage(){
-        MessageType messageType = new MessageType("MT012");
-        Document document = new Document("r{4:5103:EBA7{5:6");
-        Event event = new Event("BNPAFRPP", "Test", messageType,  document);
+        MessageType messageType = new MessageType("MT598");
+        Document document = new Document("55{4:33:20C:AA4444//BKL111{5:RE");
+        Event event = new Event("DISTRIBUTION","Swift-FIN","GEBABEBBAAA","ECMSBEBBCCB","", messageType,  document);
         return new Message(event);
     }
-
+    private String createMessagePerf(int nbmessages, long elapsedTime){
+        return "{ \"nbmessage\":"+nbmessages+",\"elapsedtime\":"+elapsedTime+"}";
+    }
 
 }

@@ -22,9 +22,11 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
+import static org.hamcrest.Matchers.hasItems;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoApplication.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD) // reset spring context after each test method
@@ -38,27 +40,28 @@ public class RouterTest {
     public void setUp() {
         RestAssured.port = port;
     }
-
-    @Test
+    @Disabled
     public void testEvaluateRouter() {
         given()
-               .body("{\n" +
-                     "    \"event\": {\n" +
-                     "        \"receiverAddress\": \"BNPAFRPP\",\n" +
-                     "        \"messageType\": {\n" +
-                     "          \"code\": \"MT012\"" +
-                     "          },\n" +
-                     "        \"TRN\": \"Test\",\n" +
-                     "        \"document\": {\n" +
-                     "          \"data\": \"r{4:5103:EBA7{5:6\"" +
-                     "          }\n" +
-                     "    }\n" +
-                     "}")
-               .contentType(ContentType.JSON)
-          .when()
-               .post("/router")
-          .then()
-             .statusCode(200)
-               .body("codeRoutage", is("CHG02"));
-    }
+                .body("{\n" +
+                "    \"event\": {\n" +
+                "        \"direction\":\"DISTRIBUTION\","+
+                "        \"networkProtocol\":\"Swift-FIN\", "+
+                "        \"receiverAddress\": \"GEBABEBBAAA\",\n" +
+                "        \"senderAddress\":\"ECMSBEBBCCB\","+
+                "        \"messageType\": {\n" +
+                "          \"code\": \"MT598\"" +
+                "          },\n" +
+                "        \"document\": {\n" +
+                "          \"data\": \"55{4:33:20C:AA4444//BKL111{5:RE\"" +
+                "          }\n" +
+                "    }\n" +
+                "}")
+        .contentType(ContentType.JSON)
+        .when()
+        .post("/router")
+        .then()
+        .statusCode(200)
+        .body("codeRoutage", hasItems("CAL06"));
+        }
 }

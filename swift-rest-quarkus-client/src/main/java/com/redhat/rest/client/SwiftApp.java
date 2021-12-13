@@ -52,6 +52,7 @@ public class SwiftApp implements QuarkusApplication{
         // if(this.clientQuarkus == null) 
         //     LOGGER.infof("clientQuarkus is null");
         // else LOGGER.infof("clientQuarkus is not null");
+        
         for(int i=0; i< 100; i++){
             this.clientQuarkus.callDMNCodesRoutage(message);
         }
@@ -65,15 +66,20 @@ public class SwiftApp implements QuarkusApplication{
         }
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
+        qCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
         LOGGER.infof("Quarkus - Invoking code routage decision service for %s  messages tooks %s s",nbmessages,elapsedTime/1000);
         return 0;
     }
 
     private Message createRandomMessage(){
-        MessageType messageType = new MessageType("MT012");
-        Document document = new Document("r{4:5103:EBA7{5:6");
-        Event event = new Event("BNPAFRPP", "Test", messageType,  document);
+        MessageType messageType = new MessageType("MT598");
+        Document document = new Document("55{4:33:20C:AA4444//BKL111{5:RE");
+        Event event = new Event("DISTRIBUTION","Swift-FIN","GEBABEBBAAA","ECMSBEBBCCB","", messageType,  document);
         return new Message(event);
+    }
+
+    private String createMessagePerf(int nbmessages, long elapsedTime){
+        return "{ \"nbmessage\":"+nbmessages+",\"elapsedtime\":"+elapsedTime+"}";
     }
 
 
