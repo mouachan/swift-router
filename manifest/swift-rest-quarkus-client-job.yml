@@ -9,7 +9,7 @@ spec:
     metadata:
       name: swift-rest-quarkus-client-job
     spec:
-      parallelism: 10 
+      parallelism: 1 
       containers:
         - name: swift-rest-quarkus-client
           image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:98ac11274dda6ae7ee818dcf851655800cfae4d65d97d6c4cbcc5d9307ccc634
