@@ -1,6 +1,4 @@
-package com.redhat.rest.client;
-
-
+package com.redhat;
 
 import javax.ws.rs.core.MediaType;
 
@@ -10,18 +8,24 @@ import com.redhat.model.MessageType;
 import com.redhat.model.Document;
 
 
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 import org.jboss.logging.Logger;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-//import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+
+import org.kie.dmn.api.core.DMNResult;
+import org.kie.kogito.decision.DecisionModel;
+import org.kie.kogito.decision.DecisionModels;
+
+import javax.enterprise.context.ApplicationScoped;
 
 import io.quarkus.runtime.QuarkusApplication;
-import javax.enterprise.context.ApplicationScoped;
+
 
 
 
@@ -29,39 +33,42 @@ import javax.enterprise.context.ApplicationScoped;
 public class SwiftApp implements QuarkusApplication{
     private static final Logger LOGGER = Logger.getLogger(SwiftApp.class);
 
-    @Channel("sbCodeRoutage")
-    Emitter<String> sbCodeRoutageRequestEmitter;
-
-    @Inject
-    @RestClient
-    SwiftSpringBootRemoteService clientSpringboot;
+    private static String ID_APP = "QUARKUS-EMBEDDED";
 
     private String result;
 
     private Message message;
 
+    private DMNResult dmnResult;
 
-    
+    @Channel("embeddedCodeRoutage")
+    Emitter<String> embeddedCodeRoutageRequestEmitter;
+
+    @Inject
+    DecisionModels decisionModels;
+
+
     public int run(String... args) throws Exception {
+        DecisionModel router = decisionModels.getDecisionModel("https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", "router");
         int nbmessages = 1000;
         message = createRandomMessage();
         // if(this.clientQuarkus == null) 
         //     LOGGER.infof("clientQuarkus is null");
         // else LOGGER.infof("clientQuarkus is not null");
-        for(int i=0; i< 100; i++){
-            this.clientSpringboot.callDMNCodesRoutage(message);
-        }
-
-        LOGGER.infof("message %s",message);
+        
+        //LOGGER.infof("message %s",message);
+        Map<String, Object> context = new HashMap<>();
+        context.put("event", message.getEvent());
         long start = System.currentTimeMillis();
         for(int i=0; i< nbmessages; i++){
-            result = this.clientSpringboot.callDMNCodesRoutage(message);
-            sbCodeRoutageRequestEmitter.send(result);
+            dmnResult = router.evaluateAll(router.newContext(context));
+            //LOGGER.infof("Result : "+dmnResult);
+            embeddedCodeRoutageRequestEmitter.send(dmnResult.toString());
         }
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
-        sbCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
-        LOGGER.infof("SpringBoot - Invoking code routage decision service for %s  messages tooks %s s",nbmessages,elapsedTime/1000);
+        embeddedCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
+        LOGGER.infof("Quarkus - Invoking code routage decision service for %s  messages tooks %s ms",nbmessages,elapsedTime);
         return 0;
     }
 
@@ -71,8 +78,10 @@ public class SwiftApp implements QuarkusApplication{
         Event event = new Event("DISTRIBUTION","Swift-FIN","GEBABEBBAAA","ECMSBEBBCCB","", messageType,  document);
         return new Message(event);
     }
+
     private String createMessagePerf(int nbmessages, long elapsedTime){
-        return "{ \"nbmessage\":"+nbmessages+",\"elapsedtime\":"+elapsedTime+"}";
+        return "{\"id\":"+ID_APP+" \"nbmessage\":"+nbmessages+",\"elapsedtime\":"+elapsedTime+"}";
     }
+
 
 }

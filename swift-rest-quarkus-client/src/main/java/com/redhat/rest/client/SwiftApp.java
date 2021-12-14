@@ -12,15 +12,11 @@ import com.redhat.model.Document;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 import org.jboss.logging.Logger;
 
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
-//import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.quarkus.runtime.QuarkusApplication;
 import javax.enterprise.context.ApplicationScoped;
@@ -45,7 +41,7 @@ public class SwiftApp implements QuarkusApplication{
     private Message message;
 
 
-    
+    @ApplicationScoped
     public int run(String... args) throws Exception {
         int nbmessages = 1000;
         message = createRandomMessage();

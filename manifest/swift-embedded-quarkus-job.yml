@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: swift-embedded-quarkus-job
+  namespace: swift-router
+spec:
+  selector: {}
+  template:
+    metadata:
+      name: swift-embedded-quarkus-job
+    spec:
+      containers:
+        - name: swift-embedded-quarkus
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-router-kogito-embedded@sha256:befc2242d66d173314a88b715025268887fefa9dcd994940b94be9eb92781d1a
+          command:
+            - java
+          args:
+            - '-Dquarkus.http.host=0.0.0.0'
+            - '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
+            - '-jar'
+            - /deployments/swift-router-kogito-embedded-1.0-SNAPSHOT-runner.jar
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: swift-router-cm
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: JAVA_LIB_DIR
+              value: /deployments/lib
+            - name: JAVA_APP_JAR
+              value: >-
+                /deployments/swift-router-kogito-embedded-1.0-SNAPSHOT-runner.jar  
+      restartPolicy: Never
