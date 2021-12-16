@@ -7,7 +7,8 @@ import com.redhat.model.Event;
 import com.redhat.model.MessageType;
 import com.redhat.model.Document;
 
-
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,7 +36,7 @@ public class SwiftApp implements QuarkusApplication{
 
     private static String ID_APP = "QUARKUS-EMBEDDED";
 
-    private String result;
+    private List<String> results;
 
     private Message message;
 
@@ -58,17 +59,21 @@ public class SwiftApp implements QuarkusApplication{
         
         //LOGGER.infof("message %s",message);
         Map<String, Object> context = new HashMap<>();
+        results = new ArrayList<String>();
         context.put("event", message.getEvent());
         long start = System.currentTimeMillis();
         for(int i=0; i< nbmessages; i++){
-            dmnResult = router.evaluateAll(router.newContext(context));
+            results.add((router.evaluateAll(router.newContext(context))).toString());
             //LOGGER.infof("Result : "+dmnResult);
-            embeddedCodeRoutageRequestEmitter.send(dmnResult.toString());
         }
+        
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
-        embeddedCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
         LOGGER.infof("Quarkus - Invoking code routage decision service for %s  messages tooks %s ms",nbmessages,elapsedTime);
+
+        for(String res : results)
+         embeddedCodeRoutageRequestEmitter.send(res).toCompletableFuture().join();
+        embeddedCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime)).toCompletableFuture().join();
         return 0;
     }
 
@@ -82,6 +87,8 @@ public class SwiftApp implements QuarkusApplication{
     private String createMessagePerf(int nbmessages, long elapsedTime){
         return "{\"id\":"+ID_APP+" \"nbmessage\":"+nbmessages+",\"elapsedtime\":"+elapsedTime+"}";
     }
+
+ 
 
 
 }

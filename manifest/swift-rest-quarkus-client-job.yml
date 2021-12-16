@@ -12,7 +12,7 @@ spec:
       parallelism: 1 
       containers:
         - name: swift-rest-quarkus-client
-          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:98ac11274dda6ae7ee818dcf851655800cfae4d65d97d6c4cbcc5d9307ccc634
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:a9e1e2661606428d18767943d5cb0614fbbba3267bb1ef106a614f83a16913bc
           command:
             - java
             - '-Dquarkus.http.host=0.0.0.0'

@@ -19,8 +19,13 @@ import org.jboss.logging.Logger;
 import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 //import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.reactive.messaging.OnOverflow;
 
 import io.quarkus.runtime.QuarkusApplication;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 
 
@@ -30,13 +35,14 @@ public class SwiftApp implements QuarkusApplication{
     private static final Logger LOGGER = Logger.getLogger(SwiftApp.class);
 
     @Channel("sbCodeRoutage")
+    @OnOverflow(value = OnOverflow.Strategy.BUFFER, bufferSize = 100000)
     Emitter<String> sbCodeRoutageRequestEmitter;
 
     @Inject
     @RestClient
     SwiftSpringBootRemoteService clientSpringboot;
 
-    private String result;
+    private List<String> results;
 
     private Message message;
 
@@ -48,20 +54,34 @@ public class SwiftApp implements QuarkusApplication{
         // if(this.clientQuarkus == null) 
         //     LOGGER.infof("clientQuarkus is null");
         // else LOGGER.infof("clientQuarkus is not null");
-        for(int i=0; i< 100; i++){
-            this.clientSpringboot.callDMNCodesRoutage(message);
-        }
 
         LOGGER.infof("message %s",message);
+        results = new ArrayList<String>();
         long start = System.currentTimeMillis();
         for(int i=0; i< nbmessages; i++){
-            result = this.clientSpringboot.callDMNCodesRoutage(message);
-            sbCodeRoutageRequestEmitter.send(result);
+            results.add((this.clientSpringboot.callDMNCodesRoutage(message)).toString());
         }
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
-        sbCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
         LOGGER.infof("SpringBoot - Invoking code routage decision service for %s  messages tooks %s s",nbmessages,elapsedTime/1000);
+        LOGGER.infof("number of message in the list %s"+results.size());
+        int i = 0;
+        for(String res : results){
+            //LOGGER.infof("resultat number %s %s",i, res);
+            sbCodeRoutageRequestEmitter.send(res).toCompletableFuture().join();
+                // whenComplete((success, failure) -> {
+                //     if (failure != null) {
+                //         System.out.println("D'oh! " + failure.getMessage());
+                //     } 
+                // });
+                // i++;
+            }
+        sbCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime)).toCompletableFuture().join();
+            // whenComplete((success, failure) -> {
+            //     if (failure != null) {
+            //         System.out.println("D'oh! " + failure.getMessage());
+            //     } 
+            // });
         return 0;
     }
 

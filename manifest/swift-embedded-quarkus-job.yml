@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: swift-embedded-quarkus
-          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-router-kogito-embedded@sha256:befc2242d66d173314a88b715025268887fefa9dcd994940b94be9eb92781d1a
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-router-kogito-embedded@sha256:6dfeb597d5343ef362c195bd3199987028fa47cd120d31dff165a4f18b836a77
           command:
             - java
           args:

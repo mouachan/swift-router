@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: swift-rest-springboot-client
-          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-springboot-client@sha256:b6d3984f47af6d6c884be2700a635b9e87c6fbc3222ebab3315d8800750c29fc
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-springboot-client@sha256:f5ff327c3e3d10a976c0b67ca88eac70f1cf457a32a65e7d8f3a90d3d2f5da6a
           command:
             - java
             - '-Dquarkus.http.host=0.0.0.0'

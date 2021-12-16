@@ -19,6 +19,10 @@ import org.eclipse.microprofile.reactive.messaging.Channel;
 import org.eclipse.microprofile.reactive.messaging.Emitter;
 
 import io.quarkus.runtime.QuarkusApplication;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.enterprise.context.ApplicationScoped;
 
 
@@ -40,8 +44,9 @@ public class SwiftApp implements QuarkusApplication{
 
     private Message message;
 
+    private List<String> results;
 
-    @ApplicationScoped
+
     public int run(String... args) throws Exception {
         int nbmessages = 1000;
         message = createRandomMessage();
@@ -49,21 +54,23 @@ public class SwiftApp implements QuarkusApplication{
         //     LOGGER.infof("clientQuarkus is null");
         // else LOGGER.infof("clientQuarkus is not null");
         
-        for(int i=0; i< 100; i++){
-            this.clientQuarkus.callDMNCodesRoutage(message);
-        }
+        // for(int i=0; i< 100; i++){
+        //     this.clientQuarkus.callDMNCodesRoutage(message);
+        // }
 
         LOGGER.infof("message %s",message);
-
+        results = new ArrayList<String>();
         long start = System.currentTimeMillis();
-        for(int i=0; i< nbmessages; i++){
-            result = this.clientQuarkus.callDMNCodesRoutage(message);
-            qCodeRoutageRequestEmitter.send(result);
+        for(int i=0; i< nbmessages; i++){;
+            results.add((this.clientQuarkus.callDMNCodesRoutage(message)).toString());
         }
         long end = System.currentTimeMillis();
         long elapsedTime = end - start;
-        qCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime));
         LOGGER.infof("Quarkus - Invoking code routage decision service for %s  messages tooks %s s",nbmessages,elapsedTime/1000);
+
+        for(String res : results)
+             qCodeRoutageRequestEmitter.send(res).toCompletableFuture().join();
+        qCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, elapsedTime)).toCompletableFuture().join();
         return 0;
     }
 

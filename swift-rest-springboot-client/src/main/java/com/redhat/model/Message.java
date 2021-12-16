@@ -30,7 +30,5 @@ public class Message {
     @Override
     public String toString() {
         return "Message [event=" + event + "]";
-    @Override
-    public String toString() {
-        return "Message [event=" + event + ", idApp=" + idApp + "]";
     }
+}
