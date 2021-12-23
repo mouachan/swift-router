@@ -121,7 +121,7 @@
           <dmn:text>matches(?,"GEBABEBB...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_ED4C3FC6-1D6B-4D4D-8520-C0A0CD5D178D">
-          <dmn:text>"NBBEBEBB216","MGTCBEBEECL","ECMSBEBBCCB" , matches(?,"PARB.......") , matches(?,"CEDELULL...") , matches(?,"IRVTUS3N...")</dmn:text>
+          <dmn:text>"NBBEBEBB216","MGTCBEBEECL","ECMSBEBBCCB" , matches(?,".ARB.......") , matches(?,"CEDELULL...") , matches(?,"IRVTUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_8EB50E1F-730D-408A-BED4-1F8C667F8718">
           <dmn:text>"MT544","MT545","MT546","MT547","MT548"</dmn:text>
@@ -151,7 +151,7 @@
           <dmn:text>"GEBABEBBALM"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_E2E57594-76FC-4802-AF0E-40E63B8BE502">
-          <dmn:text>matches(?,"PARBITMM..."), matches(?,"PARBFRPP..."), "MGTCBEBEECL", matches(?,"NBBEBEBB..."), matches(?,"PARBESM....")</dmn:text>
+          <dmn:text>matches(?,"....ITMM..."), matches(?,"....FRPP..."), "MGTCBEBEECL", matches(?,"NBBEBEBB..."), matches(?,"....ESM....")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_379363BC-BCCE-4678-B253-E914719D57F1">
           <dmn:text>"MT509"</dmn:text>
@@ -265,10 +265,10 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_891D1057-7602-4B65-88C2-AD66C2E3D5F5">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_5B4A9A17-EA90-44DD-8696-BDF2445721D7">
-          <dmn:text>matches(?,"BNPAUS3N...")</dmn:text>
+          <dmn:text>matches(?,".NPAUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_24837FB2-5BB9-4E31-9F54-987510DDADD4">
           <dmn:text>"MT199" , "MT299","MT999","MT195","MT295","MT196","MT296"</dmn:text>
@@ -294,10 +294,10 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_8238487F-A625-4DFF-8194-3F59E7AF3890">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_E403559E-0C67-4502-9158-A4F6EB2FEBC2">
-          <dmn:text>matches(?,"BNPAUS3N...")</dmn:text>
+          <dmn:text>matches(?,".NPAUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_EE378A61-2152-4B8C-AA54-2EAB25A9E07F">
           <dmn:text>"MT199","MT299","MT999","MT195","MT295","MT196","MT296"</dmn:text>
@@ -323,7 +323,7 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_A6547853-9FA6-41CC-8956-09968D863B90">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_A1220816-7EDB-43EC-89CD-D118FD8A6659">
           <dmn:text>not (matches(?,"TRCKCHZZ..."))</dmn:text>
@@ -352,7 +352,7 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_0DF106FA-D355-4098-A5D5-7F353BA123B3">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_0404289B-79C5-470A-9A73-EE920E5A8040">
           <dmn:text>not (matches(?,"TRCKCHZZ..."))</dmn:text>
@@ -384,7 +384,7 @@
             <kie:width>207</kie:width>
             <kie:width>196</kie:width>
             <kie:width>203</kie:width>
-            <kie:width>450</kie:width>
+            <kie:width>448</kie:width>
             <kie:width>910</kie:width>
             <kie:width>844</kie:width>
             <kie:width>617</kie:width>

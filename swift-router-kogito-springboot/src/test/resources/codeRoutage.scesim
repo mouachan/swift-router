@@ -526,7 +526,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"PARBITMM304"</rawValue>
+            <rawValue class="string">"XARBITMM304"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -982,7 +982,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1085,7 +1085,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1096,7 +1096,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1199,7 +1199,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1210,7 +1210,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1313,7 +1313,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1427,7 +1427,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1504,7 +1504,7 @@
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
           <expressionAlias>PROPERTY 1</expressionAlias>
-          <columnWidth>1329</columnWidth>
+          <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
@@ -1527,7 +1527,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>swift-router-kogito-springboot/src/main/resources/router.dmn</dmnFilePath>
+    <dmnFilePath>swift-router-kogito-quarkus/src/main/resources/router.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
     <dmnName>router</dmnName>

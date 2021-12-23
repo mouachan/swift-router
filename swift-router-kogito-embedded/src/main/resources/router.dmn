@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_6E309659-2DF8-4486-9D5C-3B230F7EEDC2" name="router" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF">
   <dmn:extensionElements/>
   <dmn:itemDefinition id="_163D6AD6-72D3-4D06-904F-DF1C893256CC" name="tEvent" isCollection="false">
@@ -41,7 +40,7 @@
   <dmn:decision id="_E2323A0A-211D-4548-B8BF-DFE6B743F463" name="codeRoutage">
     <dmn:extensionElements/>
     <dmn:variable id="_5C5E1689-F284-4F67-BA57-8023172A02BB" name="codeRoutage" typeRef="tCodesRoutage"/>
-    <dmn:informationRequirement id="_680C3BE2-7271-4A2A-B6AD-03F6F6F82952#_53037357-BF76-4FFD-8966-52B4A5912941#_CA270E03-4AD2-4887-8B1E-6D88CE23E928#_52B3D627-340C-4A57-BC3F-4655DB243FE6#_C764587A-25C2-4B11-935F-CF607BE0A100">
+    <dmn:informationRequirement id="_C764587A-25C2-4B11-935F-CF607BE0A100">
       <dmn:requiredInput href="#_9B58834D-936A-481D-A06C-C95085BBFF67"/>
     </dmn:informationRequirement>
     <dmn:decisionTable id="_FB28F57F-4448-4EFD-8227-82CFE5113DB6" hitPolicy="COLLECT" preferredOrientation="Rule-as-Row">
@@ -122,7 +121,7 @@
           <dmn:text>matches(?,"GEBABEBB...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_ED4C3FC6-1D6B-4D4D-8520-C0A0CD5D178D">
-          <dmn:text>"NBBEBEBB216","MGTCBEBEECL","ECMSBEBBCCB" , matches(?,"PARB.......") , matches(?,"CEDELULL...") , matches(?,"IRVTUS3N...")</dmn:text>
+          <dmn:text>"NBBEBEBB216","MGTCBEBEECL","ECMSBEBBCCB" , matches(?,".ARB.......") , matches(?,"CEDELULL...") , matches(?,"IRVTUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_8EB50E1F-730D-408A-BED4-1F8C667F8718">
           <dmn:text>"MT544","MT545","MT546","MT547","MT548"</dmn:text>
@@ -152,7 +151,7 @@
           <dmn:text>"GEBABEBBALM"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_E2E57594-76FC-4802-AF0E-40E63B8BE502">
-          <dmn:text>matches(?,"PARBITMM..."), matches(?,"PARBFRPP..."), "MGTCBEBEECL", matches(?,"NBBEBEBB..."), matches(?,"PARBESM....")</dmn:text>
+          <dmn:text>matches(?,"....ITMM..."), matches(?,"....FRPP..."), "MGTCBEBEECL", matches(?,"NBBEBEBB..."), matches(?,"....ESM....")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_379363BC-BCCE-4678-B253-E914719D57F1">
           <dmn:text>"MT509"</dmn:text>
@@ -266,10 +265,10 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_891D1057-7602-4B65-88C2-AD66C2E3D5F5">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_5B4A9A17-EA90-44DD-8696-BDF2445721D7">
-          <dmn:text>matches(?,"BNPAUS3N...")</dmn:text>
+          <dmn:text>matches(?,".NPAUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_24837FB2-5BB9-4E31-9F54-987510DDADD4">
           <dmn:text>"MT199" , "MT299","MT999","MT195","MT295","MT196","MT296"</dmn:text>
@@ -295,10 +294,10 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_8238487F-A625-4DFF-8194-3F59E7AF3890">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_E403559E-0C67-4502-9158-A4F6EB2FEBC2">
-          <dmn:text>matches(?,"BNPAUS3N...")</dmn:text>
+          <dmn:text>matches(?,".NPAUS3N...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_EE378A61-2152-4B8C-AA54-2EAB25A9E07F">
           <dmn:text>"MT199","MT299","MT999","MT195","MT295","MT196","MT296"</dmn:text>
@@ -324,7 +323,7 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_A6547853-9FA6-41CC-8956-09968D863B90">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_A1220816-7EDB-43EC-89CD-D118FD8A6659">
           <dmn:text>not (matches(?,"TRCKCHZZ..."))</dmn:text>
@@ -353,7 +352,7 @@
           <dmn:text>"Swift-FIN"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_0DF106FA-D355-4098-A5D5-7F353BA123B3">
-          <dmn:text>matches(?,"BNPANL2A...")</dmn:text>
+          <dmn:text>matches(?,".NPANL2A...")</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_0404289B-79C5-470A-9A73-EE920E5A8040">
           <dmn:text>not (matches(?,"TRCKCHZZ..."))</dmn:text>
@@ -377,24 +376,24 @@
     </dmn:decisionTable>
   </dmn:decision>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram>
+    <dmndi:DMNDiagram id="_1422EDC9-1817-47D0-B5D8-1FA93A0F3E5C" name="DRG">
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef="_FB28F57F-4448-4EFD-8227-82CFE5113DB6">
-            <kie:width>50.0</kie:width>
-            <kie:width>207.0</kie:width>
-            <kie:width>196.0</kie:width>
-            <kie:width>203.0</kie:width>
-            <kie:width>450.0</kie:width>
-            <kie:width>910.0</kie:width>
-            <kie:width>844.0</kie:width>
-            <kie:width>617.0</kie:width>
-            <kie:width>449.0</kie:width>
-            <kie:width>691.0</kie:width>
+            <kie:width>50</kie:width>
+            <kie:width>207</kie:width>
+            <kie:width>196</kie:width>
+            <kie:width>203</kie:width>
+            <kie:width>448</kie:width>
+            <kie:width>910</kie:width>
+            <kie:width>844</kie:width>
+            <kie:width>617</kie:width>
+            <kie:width>449</kie:width>
+            <kie:width>691</kie:width>
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-_9B58834D-936A-481D-A06C-C95085BBFF67" dmnElementRef="_9B58834D-936A-481D-A06C-C95085BBFF67" isCollapsed="false">
+      <dmndi:DMNShape id="dmnshape-drg-_9B58834D-936A-481D-A06C-C95085BBFF67" dmnElementRef="_9B58834D-936A-481D-A06C-C95085BBFF67" isCollapsed="false">
         <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255"/>
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
@@ -403,7 +402,7 @@
         <dc:Bounds x="410" y="322" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-_E2323A0A-211D-4548-B8BF-DFE6B743F463" dmnElementRef="_E2323A0A-211D-4548-B8BF-DFE6B743F463" isCollapsed="false">
+      <dmndi:DMNShape id="dmnshape-drg-_E2323A0A-211D-4548-B8BF-DFE6B743F463" dmnElementRef="_E2323A0A-211D-4548-B8BF-DFE6B743F463" isCollapsed="false">
         <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255"/>
           <dmndi:StrokeColor red="0" green="0" blue="0"/>
@@ -412,7 +411,7 @@
         <dc:Bounds x="411" y="173" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
-      <dmndi:DMNEdge id="dmnedge-_680C3BE2-7271-4A2A-B6AD-03F6F6F82952#_53037357-BF76-4FFD-8966-52B4A5912941#_CA270E03-4AD2-4887-8B1E-6D88CE23E928#_52B3D627-340C-4A57-BC3F-4655DB243FE6#_C764587A-25C2-4B11-935F-CF607BE0A100-AUTO-TARGET" dmnElementRef="_680C3BE2-7271-4A2A-B6AD-03F6F6F82952#_53037357-BF76-4FFD-8966-52B4A5912941#_CA270E03-4AD2-4887-8B1E-6D88CE23E928#_52B3D627-340C-4A57-BC3F-4655DB243FE6#_C764587A-25C2-4B11-935F-CF607BE0A100">
+      <dmndi:DMNEdge id="dmnedge-drg-_C764587A-25C2-4B11-935F-CF607BE0A100-AUTO-TARGET" dmnElementRef="_C764587A-25C2-4B11-935F-CF607BE0A100">
         <di:waypoint x="460" y="347"/>
         <di:waypoint x="461" y="173"/>
       </dmndi:DMNEdge>

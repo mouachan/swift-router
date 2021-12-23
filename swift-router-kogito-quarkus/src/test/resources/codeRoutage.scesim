@@ -526,7 +526,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"PARBITMM304"</rawValue>
+            <rawValue class="string">"XARBITMM304"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -982,7 +982,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1085,7 +1085,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1096,7 +1096,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1199,7 +1199,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1210,7 +1210,7 @@
               <name>1|6</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPAUS3N456"</rawValue>
+            <rawValue class="string">"XNPAUS3N456"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1313,7 +1313,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -1427,7 +1427,7 @@
               <name>1|5</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">"BNPANL2A123"</rawValue>
+            <rawValue class="string">"XNPANL2A123"</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
