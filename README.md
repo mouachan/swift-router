@@ -4,11 +4,17 @@
 
 ## Description
 
-This demo is a further iteration of rule-based SWIFT message routing; using Quarkus, Springboot, Kogito Drools DMN Engine.
+This demo is a further iteration of rule-based SWIFT message routing; using Quarkus, Springboot, Kogito Drools DMN Engine and Kafka.
+
 
 ## Objectives
 
 Showcase the ability to route data real time through DMN rules maintained by business users and how to enable and consume the runtime metrics monitoring
+
+
+Testing the demo can be done through :
+- rest call
+- streaming through kafka 
 
 ### Prerequisites
  
@@ -19,8 +25,8 @@ You will need:
   - Docker 19+ (only if you want to run the integration tests and/or you want to use the `docker-compose` script provided in this example).
   - Openshift cli to deploy on Openshift
   - Red Hat Business Automation Operator
-  - Grafana Operator
-  - Red Hat Integration - AMQ Streams
+  - Red Hat Grafana Operator
+  - Red Hat Integration - AMQ Streams Operator
 
 ### Archetype
 
@@ -45,7 +51,7 @@ mvn archetype:generate \
 ```
 ### Deploy Authoring/Execution envrionement
 
-Create Authoring and Execution service in a dev environment
+create Authoring and Execution service in a dev environment
 ``` 
 oc apply -f ./manifest/rhdm-authoring.yml
 ```
@@ -65,18 +71,18 @@ The DMN decision
 
 
 
-Business Central API : 
+get Business Central API route : 
 ```
 echo $(oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host')/docs
 ```
 
-Kie-server API : 
+get Kie-server API route : 
 ```
 echo $(oc get route swift-router-svc-design-time-kieserver- -o json | jq -r '.spec.host')/docs
 ```
 
 
-
+#### Test 
 call router decision service  
 Container-ID : DMNRouter_1.0.0-SNAPSHOT
 payload 
@@ -101,6 +107,8 @@ payload
 curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router.apps.cluster-nq8h5.nq8h5.sandbox1017.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
 ```
 ### Compile and Run in Local Dev Mode
+
+start kafka, Springboot Kogito decision service, Quarkus Kogito decision service
 
 ### build & deploy decisions services as microservices to openshift
 

@@ -22,11 +22,12 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    var i=0;
     $("#request-code").click((event) => {
         fetch("/swift/request", {method: "POST"})
         .then(res => res.text())
-        .then(qid => {
-            var row = $(`<h4 class='col-md-12' id='${qid}'>Calculated Code for event id # <i>${qid}</i> | <strong>Pending</strong></h4>`);
+        .then(eventid => {
+            var row = $(`<h4 class='col-md-12' id='${eventid}'>Codes Routage for event id #<i>${qid}</i> | <strong>Pending</strong></h4>`);
             $(".swift").prepend(row);
         });
     });
@@ -34,9 +35,8 @@
     var source = new EventSource("/swift");
     source.onmessage = (event) => {
       var json = JSON.parse(event.data);
-      console.log(json.codeRoutage[0]);
-      $(`#${json.codeRoutage[0]}`).html((index, html) => {
-        return html.replace("Pending", `${json.codeRoutage[0]}`);
+      $(`#${json.event.id}`).html((index, html) => {
+        return html.replace("Pending", `\$\xA0${json.codeRoutage}`);
       });
     };
 </script>
