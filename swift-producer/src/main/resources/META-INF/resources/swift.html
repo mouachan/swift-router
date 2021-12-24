@@ -27,7 +27,7 @@
         fetch("/swift/request", {method: "POST"})
         .then(res => res.text())
         .then(eventid => {
-            var row = $(`<h4 class='col-md-12' id='${eventid}'>Codes Routage for event id #<i>${qid}</i> | <strong>Pending</strong></h4>`);
+            var row = $(`<h4 class='col-md-12' id='${eventid}'>Codes Routage for event id #<i>${eventid}</i> | <strong>Pending</strong></h4>`);
             $(".swift").prepend(row);
         });
     });

@@ -1,4 +1,4 @@
-package com.redhat.model;
+package com.redhat.util;
 
 
 

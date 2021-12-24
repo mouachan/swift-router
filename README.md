@@ -124,7 +124,7 @@ deploy kafdrop
 ```
 oc apply -f ./manifest/kafdrop.yml
 ```
-build Quarkus Kogito decision service
+build and deploy Quarkus Kogito decision service
 ```
 cd swift-router-kogito-quarkus
 mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
@@ -135,6 +135,20 @@ cd ../swift-router-kogito-springboot
 mvn clean fabric8:deploy -Popenshift -DskipTests
 ```  
 
+### build & deploy rest client 
+
+### build & deploy Kafka producer/processor 
+build and deploy producer
+```
+cd ../swift-producer
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+```  
+
+build and deploy processor
+```
+cd ../swift-processor
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+```  
 ### Monitoring
 
 In oder to monitor the decision services executions we have to configure OpenShift Container Platform monitoring to scrape metrics from the /metrics endpoints of swift-router-kogito-quarkus and swift-router-kogito-springboot applications 
@@ -205,5 +219,5 @@ build and deploy quarkus rest client to call the springboot decision service
 
 
 
-# Quarkus content based routing
+# Advanced content routing using quarkus, fuse and kafka 
 https://github.com/tarilabs/quarkus-content-based-routing

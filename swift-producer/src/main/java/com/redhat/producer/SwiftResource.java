@@ -1,4 +1,4 @@
-package com.redhat;
+package com.redhat.producer;
 
 import java.util.UUID;
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class SwiftResource{
 
    
     @GET
-    @Produces(MediaType.SERVER_SENT_EVENTS) // denotes that server side events (SSE) will be produced
+    @Produces(MediaType.SERVER_SENT_EVENTS) 
     public Multi<String> stream() {
         return codeRoutage.log();
     }

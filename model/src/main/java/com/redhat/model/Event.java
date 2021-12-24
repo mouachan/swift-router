@@ -1,7 +1,7 @@
 package com.redhat.model;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class Event {
@@ -16,13 +16,13 @@ public class Event {
 
     private String senderAddress;
 
-    @JsonProperty("TRN")
+    //@JsonProperty("TRN")
     private String trn;
 
-    @JsonProperty("messageType")
+    //@JsonProperty("messageType")
     private MessageType messageType;
 
-    @JsonProperty("document")
+   // @JsonProperty("document")
     private Document document;
 
     public Event(){}

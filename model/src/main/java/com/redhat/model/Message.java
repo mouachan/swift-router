@@ -1,9 +1,7 @@
 package com.redhat.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Message {
-    @JsonProperty("event")
     private Event event;
     
 
