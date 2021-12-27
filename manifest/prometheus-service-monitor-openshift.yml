@@ -2,8 +2,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: swift-router-kogito-quarkus-monitor
-  name: swift-router-kogito-quarkus-monitor
+    k8s-app: swift-router-decision-service-quarkus-monitor
+  name: swift-router-decision-service-quarkus-monitor
   namespace: swift-router
 spec:
   endpoints:
@@ -17,14 +17,14 @@ spec:
     targetPort: 8080
   selector:
     matchLabels:
-      app: swift-router-kogito-quarkus
+      app: swift-router-decision-service-quarkus
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    k8s-app: swift-router-kogito-springboot-monitor
-  name: swift-router-kogito-springboot-monitor
+    k8s-app: swift-router-decision-service-springboot-monitor
+  name: swift-router-decision-service-springboot-monitor
   namespace: swift-router
 spec:
   endpoints:
@@ -34,4 +34,4 @@ spec:
     targetPort: 8080
   selector:
     matchLabels:
-      app: swift-router-kogito-springboot
+      app: swift-router-decision-service-springboot

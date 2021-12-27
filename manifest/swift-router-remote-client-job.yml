@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: swift-router-remote-client-quarkus-job
+  namespace: swift-router
+spec:
+  selector: {}
+  template:
+    metadata:
+      name: swift-router-remote-client-quarkus-job
+    spec:
+      parallelism: 1 
+      containers:
+        - name: swift-router-remote-client
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:a9e1e2661606428d18767943d5cb0614fbbba3267bb1ef106a614f83a16913bc
+          command:
+            - java
+            - '-Dquarkus.http.host=0.0.0.0'
+            - '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
+            - '-Dquarkus.args="1000 quarkus"'
+            - '-jar'
+            - /deployments/quarkus-run.jar
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: SWIFTQUARKUS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: swift-router-cm
+                  key: SwiftQuarkus_URL
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: swift-router-cm
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: JAVA_APP_JAR
+              value: /deployments/quarkus-run.jar            
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: swift-router-remote-client-springboot-job
+  namespace: swift-router
+spec:
+  selector: {}
+  template:
+    metadata:
+      name: swift-router-remote-client-springboot-job
+    spec:
+      parallelism: 1 
+      containers:
+        - name: swift-router-remote-client
+          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:a9e1e2661606428d18767943d5cb0614fbbba3267bb1ef106a614f83a16913bc
+          command:
+            - java
+            - '-Dquarkus.http.host=0.0.0.0'
+            - '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
+            - '-Dquarkus.args="1000 springboot"'
+            - '-jar'
+            - /deployments/quarkus-run.jar
+          env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: SPRINGBOOT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: swift-router-cm
+                  key: SwiftSpringBoot_URL
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                configMapKeyRef:
+                  name: swift-router-cm
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: JAVA_APP_JAR
+              value: /deployments/quarkus-run.jar            
+      restartPolicy: Never

@@ -67,17 +67,28 @@ services:
       KAFKA_BRIDGE_HTTP_PORT: "8080"
     volumes:
       - ./log4j.properties:/opt/strimzi/custom-config/log4j.properties
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: "no"
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka:29092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      kafka:
+        condition: service_started
 
-  swift-router-kogito-quarkus:
+  swift-router-decision-service-quarkus:
     build:
-      context: ./swift-router-kogito-quarkus
+      context: ./swift-router-decision-service-quarkus
       dockerfile: ./src/main/docker/Dockerfile.jvm
     ports:
       - 8080:8080
 
-  swift-router-kogito-springboot:
+  swift-router-decision-service-springboot:
     build:
-      context: ./swift-router-kogito-springboot
+      context: ./swift-router-decision-service-springboot
       dockerfile: ./src/main/docker/Dockerfile.jvm
     ports:
       - 8180:8080

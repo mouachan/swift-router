@@ -6,10 +6,10 @@ spec:
   serviceAccountName: prometheus
   serviceMonitorSelector:
     matchLabels:
-      app: swift-router-kogito-springboot
+      app: swift-router-decision-service-springboot
   podMonitorSelector:
     matchLabels:
-      app: swift-router-kogito-springboot
+      app: swift-router-decision-service-springboot
 
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -20,7 +20,7 @@ spec:
   serviceAccountName: prometheus
   serviceMonitorSelector:
     matchLabels:
-      app: swift-router-kogito-quarkus
+      app: swift-router-decision-service-quarkus
   podMonitorSelector:
     matchLabels:
-        app: swift-router-kogito-quarkus
+        app: swift-router-decision-service-quarkus
