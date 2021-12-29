@@ -256,7 +256,7 @@ mvn clean compile quarkus:dev
 ```
 
 to genrate an event go to http://localhost:8680/swift.html page and click on `Request Router Code`;
-the producer apps will produce a random message into `swift-requests` topic, the processor consume the message, invoke the decision service and write the result in the `codeRoutage` topic;
+the producer apps will generate a random message into `swift-requests` topic; the processor consume the message, invoke the decision service and write the result in the `codeRoutage` topic;
 from the swift interface (http://localhost:8680/swift.html), `Pending` text will be replaced with the calculated codes
 
 ## build & deploy decisions services as microservices to openshift
@@ -337,8 +337,10 @@ in the below YAML, substitute ${BEARER_TOKEN} with the output of the command abo
 copy the YAML in ../manifest/grafana-datasouce.yml file
 ```
 oc apply -f ../manifest/grafana-datasouce.yml
+oc apply -f ../manifest/dashboard-operational.yaml
 ```
-### Testing
+
+### Run and monitor 
 
 #### HTTP Remote call 
 
@@ -356,16 +358,14 @@ oc create configmap swift-router-cm --from-env-file=../manifest/swift-cm.propert
 
 build and deploy quarkus rest client to call the quarkus decision service
 ```
- cd ../swift-rest-quarkus-client
- mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-rest-quarkus-client   
+ cd ../swift-router-remote-client
+ mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-router-remote-client   
 ```
-build and deploy quarkus rest client to call the springboot decision service
-```
- cd ../swift-rest-springboot-client
- mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-rest-quarkus-client   
-```
+.... add job sections to run all applications
 
+Do some http call to the quarkus/springboot decision service, log into grafana, select the dashboard `router - Operational Dashboard` 
 
+![monitoring](./assets/grafana.png)  
 
 
 # Advanced content routing using quarkus, fuse and kafka 
