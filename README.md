@@ -28,7 +28,7 @@ You will need:
   - Red Hat Grafana Operator
   - Red Hat Integration - AMQ Streams Operator
 
-  
+
 ### Deploy Authoring/Execution envrionement
 
 create Authoring and Execution service in a dev environment
@@ -220,7 +220,9 @@ the response should be
 ```
 ### massive http call
 
-swift-router-remote-client can invoke the swift-router decision service x times
+swift-router-remote-client application invoke x times the swift-router decision service (quarkus or springboot), to specify the number of call and the type of service use (in the examples x = 1000) :
+`-Dquarkus.args="1000 springboot"`or `-Dquarkus.args="1000 quarkus"`
+
 the following example invoke springboot decision service 1000 times, insert the result of each call into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
 ```
 cd ../swift-router-remote-client
