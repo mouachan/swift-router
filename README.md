@@ -259,7 +259,9 @@ to genrate an event go to http://localhost:8680/swift.html page and click on `Re
 the producer apps will generate a random message into `swift-requests` topic; the processor consume the message, invoke the decision service and write the result in the `codeRoutage` topic;
 from the swift interface (http://localhost:8680/swift.html), `Pending` text will be replaced with the calculated codes
 
-## build & deploy decisions services as microservices to openshift
+## Deploy on openshift
+
+### build & deploy decisions services as microservices 
 
 log into openshift
 ```
@@ -283,22 +285,7 @@ build and deploy Springboot Kogito decision service
 cd ../swift-router-kogito-springboot
 mvn clean fabric8:deploy -Popenshift -DskipTests
 ```  
-
-### build & deploy rest client 
-
-### build & deploy Kafka producer/processor 
-build and deploy producer
-```
-cd ../swift-producer
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
-```  
-
-build and deploy processor
-```
-cd ../swift-processor
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
-```  
-### Monitoring
+### configure Monitoring
 
 In oder to monitor the decision services executions we have to configure OpenShift Container Platform monitoring to scrape metrics from the /metrics endpoints of swift-router-kogito-quarkus and swift-router-kogito-springboot applications 
 ```
@@ -339,12 +326,10 @@ copy the YAML in ../manifest/grafana-datasouce.yml file
 oc apply -f ../manifest/grafana-datasouce.yml
 oc apply -f ../manifest/dashboard-operational.yaml
 ```
+### build & deploy remote client 
 
-### Run and monitor 
+In order to test each service (Springboot and Quarkus implementation), deploy a Quarkus remote client application. The decision service is called x times, all results are produced into topic kafka 
 
-#### HTTP Remote call 
-
-In order to test each service (Springboot and Quarkus implementation), we will deploy two Quarkus rest client applications. The service 1000 times and push the response in a Kafka topic 
 get decisions services routes
 ```
 rm ../manifest/swift-cm.properties
@@ -361,6 +346,26 @@ build and deploy quarkus rest client to call the quarkus decision service
  cd ../swift-router-remote-client
  mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-router-remote-client   
 ```
+
+### build & deploy Kafka producer/processor applications 
+build and deploy producer
+```
+cd ../swift-producer
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+```  
+
+build and deploy processor
+```
+cd ../swift-processor
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+```  
+
+
+### Run and monitor 
+
+#### HTTP Remote call 
+
+
 .... add job sections to run all applications
 
 Do some http call to the quarkus/springboot decision service, log into grafana, select the dashboard `router - Operational Dashboard` 
