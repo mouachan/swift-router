@@ -29,7 +29,7 @@ You will need:
   - Red Hat Integration - AMQ Streams Operator
 
 
-### Deploy Authoring/Execution envrionement
+### Create decision service on Red Hat Decision Manager
 
 create Authoring and Execution service in a dev environment
 ``` 
@@ -91,7 +91,7 @@ payload
 curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router.apps.cluster-nq8h5.nq8h5.sandbox1017.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
 ```
 
-### Archetype (.. if you want to create the decision services from scratch )
+### Create Kogito Decision Service (.. if you want to create the decision services from scratch )
 
 mvn archetype to generate kogito-quarkus application
 ```mvn
@@ -143,7 +143,7 @@ copy the decision service from ./assets/router.dmn into your-kogito-application/
 you can also copy the tests scenarios from ./assets/codeRoutage.sceim into your-kogito-application/src/test/resources  
 
 
-### package and run decision services local mode
+#### Start the infra and tests applications
 
 
 build and package Quarkus Kogito decision service
@@ -175,7 +175,7 @@ In the next sections we will explore how to route swift messages through differe
 - http call
 - massive http call
 - streaming (kafka)
-### http call
+#### http call
 
 go to http://localhost:8080/swagger-ui
 
@@ -218,7 +218,7 @@ the response should be
   ]
 }
 ```
-### massive http call
+#### massive http call
 
 swift-router-remote-client application invoke x times the swift-router decision service (quarkus or springboot), to specify the number of call and the type of service use (in the examples x = 1000) :
 `-Dquarkus.args="1000 springboot"`or `-Dquarkus.args="1000 quarkus"`
@@ -237,7 +237,7 @@ mvn clean compile quarkus:dev -Dquarkus.args="1000 quarkus"
 
 You can inspect the results using Kafdrop
 
-### stream swift messages 
+#### stream swift messages 
 
 The following picture describe how to stream swift events through kafka topics
 
