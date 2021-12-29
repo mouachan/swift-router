@@ -35,9 +35,9 @@ public class SwiftProcessor{
     @Outgoing("codeRoutage")
     @Blocking
     public String process(Message message) throws InterruptedException {
-        LOGGER.infof("message received %s",message.toString());
+        LOGGER.infof("SwiftProcessor - message received %s",message.toString());
         String result = this.clientQuarkus.callDMNCodesRoutage(message); 
-        LOGGER.infof("Codes Routage  %s",result);
+        LOGGER.infof("SwiftProcessor - Codes Routage  %s",result);
         return result;
     }
 

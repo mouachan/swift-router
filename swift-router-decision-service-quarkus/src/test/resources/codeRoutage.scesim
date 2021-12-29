@@ -1527,7 +1527,7 @@
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>swift-router-kogito-quarkus/src/main/resources/router.dmn</dmnFilePath>
+    <dmnFilePath>swift-router-decision-service-quarkus/src/main/resources/router.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
     <dmnName>router</dmnName>

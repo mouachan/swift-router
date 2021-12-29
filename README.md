@@ -28,27 +28,7 @@ You will need:
   - Red Hat Grafana Operator
   - Red Hat Integration - AMQ Streams Operator
 
-### Archetype
-
-mvn archetype to generate kogito-quarkus application
-```mvn
-mvn archetype:generate \
--DarchetypeGroupId=org.kie.kogito \
--DarchetypeArtifactId=kogito-quarkus-dm-archetype \
--DgroupId=com.redhat -DartifactId=swift-router-kogito-quarkus \
--DarchetypeVersion=1.5.0.redhat-00006 \
--Dversion=1.0-SNAPSHOT
-```
-mvn archetype to generate kogito-springboot application
-
-```mvn
-mvn archetype:generate \
--DarchetypeGroupId=org.kie.kogito \
--DarchetypeArtifactId=kogito-springboot-dm-archetype \
--DgroupId=org.redhat -DartifactId=swift-router-kogito-springboot \
--DarchetypeVersion=1.5.0.redhat-00006 \
--Dversion=1.0-SNAPSHOT
-```
+  
 ### Deploy Authoring/Execution envrionement
 
 create Authoring and Execution service in a dev environment
@@ -69,6 +49,10 @@ Log into Decision Central using dmAdmin/dmAdmin
 
 The DMN decision 
 
+![code routage dmn service](./assets/DMNdecision.png) 
+
+The router decision table
+![code routage decision table](./assets/decisionTable.png) 
 
 
 get Business Central API route : 
@@ -106,11 +90,174 @@ payload
 ```json
 curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router.apps.cluster-nq8h5.nq8h5.sandbox1017.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
 ```
-### Compile and Run in Local Dev Mode
 
-start kafka, Springboot Kogito decision service, Quarkus Kogito decision service
+### Archetype (.. if you want to create the decision services from scratch )
 
-### build & deploy decisions services as microservices to openshift
+mvn archetype to generate kogito-quarkus application
+```mvn
+mvn archetype:generate \
+-DarchetypeGroupId=org.kie.kogito \
+-DarchetypeArtifactId=kogito-quarkus-dm-archetype \
+-DgroupId=com.redhat -DartifactId=swift-router-decision-service-quarkus \
+-DarchetypeVersion=1.5.0.redhat-00006 \
+-Dversion=1.0-SNAPSHOT
+```
+mvn archetype to generate kogito-springboot application
+
+```mvn
+mvn archetype:generate \
+-DarchetypeGroupId=org.kie.kogito \
+-DarchetypeArtifactId=kogito-springboot-dm-archetype \
+-DgroupId=org.redhat -DartifactId=swift-router-decision-service-springboot \
+-DarchetypeVersion=1.5.0.redhat-00006 \
+-Dversion=1.0-SNAPSHOT
+```
+add the following extensions/dependencies :
+- for quarkus application :  monitoring-prometheus-quarkus-addon, quarkus-openshift, quarkus-smallrye-health and kogito-scenario-simulation to your pom file
+- for springboot : spring-boot-starter-actuator, monitoring-prometheus-springboot-addon, kogito-scenario-simulation
+to deploy the apps on openshift, add the the fabric8 plugin to a profile named openshift into springboot pom file :
+
+```xml
+    <profile>
+      <id>openshift</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <version>4.4.1</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>resource</goal>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+```
+copy the decision service from ./assets/router.dmn into your-kogito-application/src/main/resources
+you can also copy the tests scenarios from ./assets/codeRoutage.sceim into your-kogito-application/src/test/resources  
+
+
+### package and run decision services local mode
+
+
+build and package Quarkus Kogito decision service
+```
+cd swift-router-decision-service-quarkus
+mvn clean package
+```
+build and package SpringBoot Kogito decision service
+```
+cd ../swift-router-decision-service-quarkus
+mvn clean package -DskipTests=true
+```
+
+start kafka, kafdrop, springboot kogito decision service, quarkus kogito decision service, prometheus and grafana
+```
+docker compose up
+```
+
+if you want to stop and remove all images 
+```
+ docker compose down --rmi all --remove-orphans
+``` 
+endpoint to access to Swagger API :
+- quarkus : http://localhost:8080/q/swagger-ui/
+- springboot http://localhost:8180/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/springboot-metrics-resource
+
+In the next sections we will explore how to route swift messages through different way :
+
+- http call
+- massive http call
+- streaming (kafka)
+### http call
+
+go to http://localhost:8080/swagger-ui
+
+call `router` service using the following event :
+```json
+ {
+	"event":{
+		"direction":"DISTRIBUTION",
+		"networkProtocol":"Swift-FIN",
+		"receiverAddress":"GEBABEBBAAA",
+		"senderAddress":"ECMSBEBBCCB",
+		"messageType":{
+			"code":"MT598"
+		},
+		"document":{
+			"data":"55{4:33:20C:AA4444//BKL111{5:RE"
+		}
+	}
+}
+```
+the response should be 
+```json
+{
+  "event": {
+    "receiverAddress": "GEBABEBBAAA",
+    "messageReference": null,
+    "TRN": null,
+    "senderAddress": "ECMSBEBBCCB",
+    "messageType": {
+      "code": "MT598"
+    },
+    "document": {
+      "data": "55{4:33:20C:AA4444//BKL111{5:RE"
+    },
+    "networkProtocol": "Swift-FIN",
+    "direction": "DISTRIBUTION"
+  },
+  "codeRoutage": [
+    "CAL06"
+  ]
+}
+```
+### massive http call
+
+swift-router-remote-client can invoke the swift-router decision service x times
+the following example invoke springboot decision service 1000 times, insert the result of each call into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
+```
+cd ../swift-router-remote-client
+mvn clean compile quarkus:dev -Dquarkus.args="1000 springboot"
+```
+
+the following example invoke quarkus decision service 1000 times, insert the result of each call into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
+```
+cd ../swift-router-remote-client
+mvn clean compile quarkus:dev -Dquarkus.args="1000 quarkus"
+```
+
+You can inspect the results using Kafdrop
+
+### stream swift messages 
+
+The following picture describe how to stream swift events through kafka topics
+
+![streaming event](./assets/streaming.png)  
+
+run the processor
+```
+cd ../swift-router-processor
+mvn clean compile quarkus:dev
+```
+run the producer
+
+```
+cd ../swift-router-producer
+mvn clean compile quarkus:dev
+```
+
+to genrate an event go to http://localhost:8680/swift.html page and click on `Request Router Code`;
+the producer apps will produce a random message into `swift-requests` topic, the processor consume the message, invoke the decision service and write the result in the `codeRoutage` topic;
+from the swift interface (http://localhost:8680/swift.html), `Pending` text will be replaced with the calculated codes
+
+## build & deploy decisions services as microservices to openshift
 
 log into openshift
 ```

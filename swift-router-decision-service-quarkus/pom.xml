@@ -12,7 +12,6 @@
     <kogito.version>1.5.0.redhat-00006</kogito.version>
     <surefire.version>2.22.2</surefire.version>
     <compiler.version>3.8.1</compiler.version>
-    <kafka-oauth-client.version>0.7.2</kafka-oauth-client.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.release>11</maven.compiler.release> 
   </properties>
@@ -26,26 +25,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>io.strimzi</groupId>
-        <artifactId>kafka-oauth-client</artifactId>
-        <version>${kafka-oauth-client.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-rules</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-decisions</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-predictions</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -71,22 +57,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>monitoring-prometheus-quarkus-addon</artifactId>
     </dependency>
-    <!-- <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
-  </dependency> -->
-  <!-- <dependency>
-    <groupId>io.quarkus</groupId>
-    <artifactId>quarkus-container-image-docker</artifactId>
-  </dependency> -->
   <dependency>
     <groupId>io.quarkus</groupId>
     <artifactId>quarkus-openshift</artifactId>
   </dependency>
-    <dependency>
-      <groupId>io.strimzi</groupId>
-      <artifactId>kafka-oauth-client</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-junit5</artifactId>
