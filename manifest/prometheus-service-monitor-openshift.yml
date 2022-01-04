@@ -4,7 +4,6 @@ metadata:
   labels:
     k8s-app: swift-router-decision-service-quarkus-monitor
   name: swift-router-decision-service-quarkus-monitor
-  namespace: swift-router
 spec:
   endpoints:
   - interval: 30s
@@ -25,7 +24,6 @@ metadata:
   labels:
     k8s-app: swift-router-decision-service-springboot-monitor
   name: swift-router-decision-service-springboot-monitor
-  namespace: swift-router
 spec:
   endpoints:
   - interval: 30s

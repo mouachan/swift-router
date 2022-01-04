@@ -29,67 +29,7 @@ You will need:
   - Red Hat Integration - AMQ Streams Operator
 
 
-### Create decision service on Red Hat Decision Manager
 
-create Authoring and Execution service in a dev environment
-``` 
-oc apply -f ./manifest/rhdm-authoring.yml
-```
-
-get Decision central url 
-```
-oc get route swift-router-svc-design-time-rhdmcentr -o json | jq '.spec.host'
-```
-get kie-server url
-```
-oc get route swift-router-svc-design-time-kieserver -o json | jq '.spec.host'
-```
-
-Log into Decision Central using dmAdmin/dmAdmin
-
-The DMN decision 
-
-![code routage dmn service](./assets/DMNdecision.png) 
-
-The router decision table
-![code routage decision table](./assets/decisionTable.png) 
-
-
-get Business Central API route : 
-```
-echo $(oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host')/docs
-```
-
-get Kie-server API route : 
-```
-echo $(oc get route swift-router-svc-design-time-kieserver- -o json | jq -r '.spec.host')/docs
-```
-
-
-#### Test 
-call router decision service  
-Container-ID : DMNRouter_1.0.0-SNAPSHOT
-payload 
-```json
-    {
-    "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
-    "model-name": "router",
-    "event" : {
-            "receiverAddress":"XNPAFRPP",
-            "messageType":{
-                "code":"MT012"
-            },
-            "TRN":"Test",
-            "document":{
-                "data":"r{4:5103:EBA7{5:6"
-            }
-        }
-    }
-```
-
-```json
-curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router.apps.cluster-nq8h5.nq8h5.sandbox1017.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
-```
 
 ### Create Kogito Decision Service (.. if you want to create the decision services from scratch )
 
@@ -245,14 +185,14 @@ The following picture describe how to stream swift events through kafka topics
 
 run the processor
 ```
-cd ../swift-router-processor
-mvn clean compile quarkus:dev
+$ cd ../swift-router-processor
+$ mvn clean compile quarkus:dev
 ```
 run the producer
 
 ```
-cd ../swift-router-producer
-mvn clean compile quarkus:dev
+$ cd ../swift-router-producer
+$ mvn clean compile quarkus:dev
 ```
 
 to genrate an event go to http://localhost:8680/swift.html page and click on `Request Router Code`;
@@ -261,35 +201,49 @@ from the swift interface (http://localhost:8680/swift.html), `Pending` text will
 
 ## Deploy on openshift
 
-### build & deploy decisions services as microservices 
-
 log into openshift
 ```
 https://api.openshift_url:6443 -u login -p password 
 ```
+
+create a dev and prod environment
+```
+$ oc new-project swift-router-dev
+$ oc new-project swift-router-prod  
+```
+
+install on swift-router-dev environment (namespace):
+  - Red Hat Business Automation Operator
+
+install on swift-router-prod environment (namespace):
+
+  - Red Hat Grafana Operator
+  - Red Hat Integration - AMQ Streams Operator
+
+### Configure kafka (on production environment)
 create kafka cluster
 ```
-oc apply -f ./manifest/kafka.yml
+$ oc apply -f ./manifest/kafka.yml
+kafka.kafka.strimzi.io/swift-cluster created
 ```
-deploy kafdrop
+
+deploy kafdrop (to monitor topics)
 ```
-oc apply -f ./manifest/kafdrop.yml
+$ oc apply -f ./manifest/kafdrop.yml
+deploymentconfig.apps.openshift.io/kafdrop created
+service/kafdrop created
+route.route.openshift.io/kafdrop created
 ```
-build and deploy Quarkus Kogito decision service
-```
-cd swift-router-kogito-quarkus
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
-```       
-build and deploy Springboot Kogito decision service 
-```
-cd ../swift-router-kogito-springboot
-mvn clean fabric8:deploy -Popenshift -DskipTests
-```  
 ### configure Monitoring
 
 In oder to monitor the decision services executions we have to configure OpenShift Container Platform monitoring to scrape metrics from the /metrics endpoints of swift-router-kogito-quarkus and swift-router-kogito-springboot applications 
 ```
-oc apply -f ../manifest/prometheus-service-monitor-openshift.yml
+oc apply -f ./manifest/prometheus-service-monitor-openshift.yml
+```
+
+create grafana instance
+```
+oc apply -f ./manifest/grafana-instance.yml
 ```
 grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
 ```sh
@@ -323,9 +277,113 @@ in the below YAML, substitute ${BEARER_TOKEN} with the output of the command abo
 ```
 copy the YAML in ../manifest/grafana-datasouce.yml file
 ```
-oc apply -f ../manifest/grafana-datasouce.yml
-oc apply -f ../manifest/dashboard-operational.yaml
+$ oc apply -f ./manifest/grafana-datasouce.yml
+$ oc apply -f ./manifest/grafana-dashboard-operational.yml
 ```
+
+### Create decision service on Red Hat Decision Manager
+
+create Authoring and Execution service in the dev environment
+``` 
+$ oc project swift-router-dev
+$ oc apply -f ./manifest/rhdm-authoring.yml
+```
+wait until the pods `swift-router-svc-design-time-rhdmcentr-1-*` and `swift-router-svc-design-time-kieserver-1-*` are ready and running
+```
+$ oc get pods                                                                  16:44:44
+NAME                                              READY   STATUS      RESTARTS   AGE
+business-automation-operator-758bd597fb-29ghp     1/1     Running     0          5m14s
+console-cr-form                                   2/2     Running     0          4m46s
+swift-router-svc-design-time-kieserver-1-deploy   0/1     Completed   0          4m44s
+swift-router-svc-design-time-kieserver-1-g6hnn    1/1     Running     0          4m41s
+swift-router-svc-design-time-rhdmcentr-1-9dm6z    1/1     Running     0          4m41s
+swift-router-svc-design-time-rhdmcentr-1-deploy   0/1     Completed   0          4m44s
+```
+
+get Decision central host 
+```
+$ oc get route swift-router-svc-design-time-rhdmcentr -o json | jq '.spec.host'
+"swift-router-svc-design-time-rhdmcentr-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com"
+```
+get kie-server host
+```
+$ oc get route swift-router-svc-design-time-kieserver -o json | jq '.spec.host'
+"swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com"
+```
+
+log into Decision Central using dmAdmin/dmAdmin (if you use chrome and you have the unsecure warning type in ypur browser `thisisunsafe`)
+create a new space named `swift` and project named `swift-router`
+
+import the DMN ./assets/router.dmn, the DMN decision looks like 
+
+![code routage dmn service](./assets/DMNdecision.png) 
+
+and the router decision table
+![code routage decision table](./assets/decisionTable.png) 
+
+import the scenarios tests from ./assets/codeRoutage.scesim
+
+click on `deploy` button, wait until the success message is displayed 
+
+to explore the API 
+get Business Central API route : 
+```
+echo $(oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host')/docs
+```
+
+get Kie-server API route : 
+```
+echo $(oc get route swift-router-svc-design-time-kieserver- -o json | jq -r '.spec.host')/docs
+```
+
+
+#### Test 
+
+use the kie-server api to invoke ethe service 
+```
+echo $(oc get route swift-router-svc-design-time-kieserver -o json | jq -r '.spec.host')/docs
+```
+
+to call the `router` decision service use the kie-server host followed by `/services/rest/server/container/${CONTAINER-ID}/dmn/model/${MODEL-NAME}
+
+CONTAINER-ID : DMNRouter_1.0.0-SNAPSHOT
+MODEL-NAME : router
+
+payload 
+```json
+    {
+    "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "model-name": "router",
+    "event" : {
+            "receiverAddress":"XNPAFRPP",
+            "messageType":{
+                "code":"MT012"
+            },
+            "TRN":"Test",
+            "document":{
+                "data":"r{4:5103:EBA7{5:6"
+            }
+        }
+    }
+```
+
+```json
+curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
+```
+
+### build & deploy decisions services as microservices 
+
+build and deploy Quarkus Kogito decision service
+```
+cd swift-router-kogito-quarkus
+mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+```       
+build and deploy Springboot Kogito decision service 
+```
+cd ../swift-router-kogito-springboot
+mvn clean fabric8:deploy -Popenshift -DskipTests
+```  
+
 ### build & deploy remote client 
 
 In order to test each service (Springboot and Quarkus implementation), deploy a Quarkus remote client application. The decision service is called x times, all results are produced into topic kafka 
