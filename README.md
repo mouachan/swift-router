@@ -432,7 +432,24 @@ Response
 
 or use the command curl
 ```json
-curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/services/rest/server/containers/swift-router_1.0.0-SNAPSHOT/dmn/models/router/dmnresult" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\t\"event\":{\t\t\"direction\":\"DISTRIBUTION\",\t\t\"networkProtocol\":\"Swift-FIN\",\t\t\"receiverAddress\":\"GEBABEBBAAA\",\t\t\"senderAddress\":\"ECMSBEBBCCB\",\t\t\"messageType\":{\t\t\t\"code\":\"MT598\"\t\t},\t\t\"document\":{\t\t\t\"data\":\"55{4:33:20C:AA4444//BKL111{5:RE\"\t\t}\t}}"
+curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/services/rest/server/containers/swift-router_1.0.0-SNAPSHOT/dmn/models/router/dmnresult" 
+-H "accept: application/json" -H "content-type: application/json" 
+-d "{
+    \"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",
+    \"model-name\": \"router\",
+    \t\"event\":{
+        \t\t\"direction\":\"DISTRIBUTION\",
+        \t\t\"networkProtocol\":\"Swift-FIN\",
+        \t\t\"receiverAddress\":\"GEBABEBBAAA\",
+        \t\t\"senderAddress\":\"ECMSBEBBCCB\",
+        \t\t\"messageType\":{
+            \t\t\t\"code\":\"MT598\"\t\t
+            },
+            \t\t\"document\":{
+                \t\t\t\"data\":\"55{4:33:20C:AA4444//BKL111{5:RE\"
+            \t\t}\t
+            }
+    }"
 ```
 
 ### build & deploy decisions services
