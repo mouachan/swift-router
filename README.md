@@ -366,29 +366,30 @@ call the `router` rest endpoint decision service with following properties :
 Swagger URL : http://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/docs
 ![KIE Server Call Example](./assets/kie-server-call-example.png) 
 Click on DMN models and select the POST `/server/containers/{containerId}/dmn/models/{modelId}/dmnresult` endpoint 
-containerId : `swift-router_1.0.0-SNAPSHOT`
-modelId: `router`
-payload :  
+- containerId : `swift-router_1.0.0-SNAPSHOT`
+- modelId: `router`
+- payload : 
 
 ```json
-{
-"model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
-"model-name": "router",
-	"event":{
-		"direction":"DISTRIBUTION",
-		"networkProtocol":"Swift-FIN",
-		"receiverAddress":"GEBABEBBAAA",
-		"senderAddress":"ECMSBEBBCCB",
-		"messageType":{
-			"code":"MT598"
-		},
-		"document":{
-			"data":"55{4:33:20C:AA4444//BKL111{5:RE"
-		}
-	}
-}
+    {
+    "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+    "model-name": "router",
+        "event":{
+            "direction":"DISTRIBUTION",
+            "networkProtocol":"Swift-FIN",
+            "receiverAddress":"GEBABEBBAAA",
+            "senderAddress":"ECMSBEBBCCB",
+            "messageType":{
+                "code":"MT598"
+            },
+            "document":{
+                "data":"55{4:33:20C:AA4444//BKL111{5:RE"
+            }
+        }
+    }
 ```
 Response 
+
 ```json
 {
   "namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
@@ -431,7 +432,7 @@ Response
 ```
 
 or use the command curl
-```json
+```
 curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/services/rest/server/containers/swift-router_1.0.0-SNAPSHOT/dmn/models/router/dmnresult" 
 -H "accept: application/json" -H "content-type: application/json" 
 -d "{
