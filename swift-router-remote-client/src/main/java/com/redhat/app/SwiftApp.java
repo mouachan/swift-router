@@ -92,7 +92,7 @@ public class SwiftApp implements QuarkusApplication{
                 sbCodeRoutageRequestEmitter.send(res).toCompletableFuture().join();
             sbCodeRoutageRequestEmitter.send(createMessagePerf(nbmessages, (float)(elapsedTime/1000.0))).toCompletableFuture().join();
         } else {
-            LOGGER.infof("Argument %s must be quarkus or springboot ");
+            LOGGER.infof("Argument %s must be quarkus or springboot ", serviceType);
         }
         return 0;
     }

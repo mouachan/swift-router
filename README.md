@@ -211,11 +211,10 @@ create a dev and prod environment
 $ oc new-project swift-router-dev
 $ oc new-project swift-router-prod  
 ```
-
-install on swift-router-dev environment (namespace):
+from OperatorHub install on swift-router-dev environment (namespace):
   - Red Hat Business Automation Operator
 
-install on swift-router-prod environment (namespace):
+from OperatorHub install on swift-router-prod environment (namespace):
 
   - Red Hat Grafana Operator
   - Red Hat Integration - AMQ Streams Operator
@@ -226,7 +225,12 @@ create kafka cluster
 $ oc apply -f ./manifest/kafka.yml
 kafka.kafka.strimzi.io/swift-cluster created
 ```
-
+wait un til the kafka cluster is up and running 
+```
+$ oc get kafka
+NAME            DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS   READY   WARNINGS
+swift-cluster   3                        3                     True 
+```
 deploy kafdrop (to monitor topics)
 ```
 $ oc apply -f ./manifest/kafdrop.yml
@@ -238,20 +242,27 @@ route.route.openshift.io/kafdrop created
 
 In oder to monitor the decision services executions we have to configure OpenShift Container Platform monitoring to scrape metrics from the /metrics endpoints of swift-router-kogito-quarkus and swift-router-kogito-springboot applications 
 ```
-oc apply -f ./manifest/prometheus-service-monitor-openshift.yml
+$ oc apply -f ./manifest/prometheus-service-monitor-openshift.yml
+$ oc get servicemonitor
+NAME                                               AGE
+swift-router-decision-service-quarkus-monitor      78s
+swift-router-decision-service-springboot-monitor   78s
 ```
 
 create grafana instance
 ```
-oc apply -f ./manifest/grafana-instance.yml
+$ oc apply -f ./manifest/grafana-instance.yml
+$ oc get grafana -o json | jq '.items[0].status.message'
+"success"
 ```
 grant the grafana-serviceaccount to the cluster-monitoring-view cluster role.
 ```sh
-oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount
+$ oc adm policy add-cluster-role-to-user cluster-monitoring-view -z grafana-serviceaccount
+clusterrole.rbac.authorization.k8s.io/cluster-monitoring-view added: "grafana-serviceaccount"
 ```
 Get the token 
 ```
-    oc serviceaccounts get-token grafana-serviceaccount
+oc serviceaccounts get-token grafana-serviceaccount
 ``` 
 in the below YAML, substitute ${BEARER_TOKEN} with the output of the command above 
 ```yaml
@@ -275,9 +286,9 @@ in the below YAML, substitute ${BEARER_TOKEN} with the output of the command abo
         url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
     name: grafana-prometheus-datasource
 ```
-copy the YAML in ../manifest/grafana-datasouce.yml file
+copy the YAML in ../manifest/grafana-datasource.yml file
 ```
-$ oc apply -f ./manifest/grafana-datasouce.yml
+$ oc apply -f ./manifest/grafana-datasource.yml
 $ oc apply -f ./manifest/grafana-dashboard-operational.yml
 ```
 
@@ -288,7 +299,13 @@ create Authoring and Execution service in the dev environment
 $ oc project swift-router-dev
 $ oc apply -f ./manifest/rhdm-authoring.yml
 ```
-wait until the pods `swift-router-svc-design-time-rhdmcentr-1-*` and `swift-router-svc-design-time-kieserver-1-*` are ready and running
+wait until KieApp is deployed
+```
+$ oc get KieApp
+NAME                           VERSION   ENVIRONMENT      STATUS     AGE
+swift-router-svc-design-time   7.11.1    rhdm-authoring   Deployed   2m46s
+```
+check the pods `swift-router-svc-design-time-rhdmcentr-1-*` and `swift-router-svc-design-time-kieserver-1-*` are ready and running
 ```
 $ oc get pods                                                                  16:44:44
 NAME                                              READY   STATUS      RESTARTS   AGE
@@ -302,17 +319,17 @@ swift-router-svc-design-time-rhdmcentr-1-deploy   0/1     Completed   0         
 
 get Decision central host 
 ```
-$ oc get route swift-router-svc-design-time-rhdmcentr -o json | jq '.spec.host'
-"swift-router-svc-design-time-rhdmcentr-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com"
+$ oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host'
+swift-router-svc-design-time-rhdmcentr-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com
 ```
 get kie-server host
 ```
-$ oc get route swift-router-svc-design-time-kieserver -o json | jq '.spec.host'
-"swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com"
+$ oc get route swift-router-svc-design-time-kieserver -o json | jq -r '.spec.host'
+swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com
 ```
 
-log into Decision Central using dmAdmin/dmAdmin (if you use chrome and you have the unsecure warning type in ypur browser `thisisunsafe`)
-create a new space named `swift` and project named `swift-router`
+log into Decision Central (ex : https://swift-router-svc-design-time-rhdmcentr-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com)using dmAdmin/dmAdmin (if you use chrome and you have the unsecure warning type in ypur browser `thisisunsafe`)
+create a new space named `swift`, then into `swift`create a project named `swift-router`
 
 import the DMN ./assets/router.dmn, the DMN decision looks like 
 
@@ -330,48 +347,95 @@ get Business Central API route :
 ```
 echo $(oc get route swift-router-svc-design-time-rhdmcentr -o json | jq -r '.spec.host')/docs
 ```
-
+![Decision Central Swagger](./assets/decision-central-api-swagger.png) 
 get Kie-server API route : 
-```
-echo $(oc get route swift-router-svc-design-time-kieserver- -o json | jq -r '.spec.host')/docs
-```
-
-
-#### Test 
-
-use the kie-server api to invoke ethe service 
 ```
 echo $(oc get route swift-router-svc-design-time-kieserver -o json | jq -r '.spec.host')/docs
 ```
+![KIE Server Swagger](./assets/kie-server-api-swagger.png) 
 
-to call the `router` decision service use the kie-server host followed by `/services/rest/server/container/${CONTAINER-ID}/dmn/model/${MODEL-NAME}
+#### Test 
 
-CONTAINER-ID : DMNRouter_1.0.0-SNAPSHOT
-MODEL-NAME : router
+access to the swagger kie-server api to invoke ethe service 
+```
+echo $(oc get route swift-router-svc-design-time-kieserver -o json | jq -r '.spec.host')/docs
+swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/docs
+```
 
-payload 
+call the `router` rest endpoint decision service with following properties :
+Swagger URL : http://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/docs
+![KIE Server Call Example](./assets/kie-server-call-example.png) 
+Click on DMN models and select the POST `/server/containers/{containerId}/dmn/models/{modelId}/dmnresult` endpoint 
+containerId : `swift-router_1.0.0-SNAPSHOT`
+modelId: `router`
+payload :  
+
 ```json
-    {
+{
+"model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+"model-name": "router",
+	"event":{
+		"direction":"DISTRIBUTION",
+		"networkProtocol":"Swift-FIN",
+		"receiverAddress":"GEBABEBBAAA",
+		"senderAddress":"ECMSBEBBCCB",
+		"messageType":{
+			"code":"MT598"
+		},
+		"document":{
+			"data":"55{4:33:20C:AA4444//BKL111{5:RE"
+		}
+	}
+}
+```
+Response 
+```json
+{
+  "namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
+  "modelName": "router",
+  "dmnContext": {
     "model-namespace": "https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF",
     "model-name": "router",
-    "event" : {
-            "receiverAddress":"XNPAFRPP",
-            "messageType":{
-                "code":"MT012"
-            },
-            "TRN":"Test",
-            "document":{
-                "data":"r{4:5103:EBA7{5:6"
-            }
-        }
+    "event": {
+      "receiverAddress": "GEBABEBBAAA",
+      "messageReference": null,
+      "TRN": null,
+      "senderAddress": "ECMSBEBBCCB",
+      "messageType": {
+        "code": "MT598"
+      },
+      "document": {
+        "data": "55{4:33:20C:AA4444//BKL111{5:RE"
+      },
+      "id": null,
+      "networkProtocol": "Swift-FIN",
+      "direction": "DISTRIBUTION"
+    },
+    "codeRoutage": [
+      "CAL06"
+    ]
+  },
+  "messages": [],
+  "decisionResults": [
+    {
+      "decisionId": "_E2323A0A-211D-4548-B8BF-DFE6B743F463",
+      "decisionName": "codeRoutage",
+      "result": [
+        "CAL06"
+      ],
+      "messages": [],
+      "evaluationStatus": "SUCCEEDED"
     }
+  ]
+}
 ```
 
+or use the command curl
 ```json
-curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-jk49j.jk49j.sandbox1207.opentlc.com/services/rest/server/containers/DMNRouter_1.0.0-SNAPSHOT/dmn/models/router" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\"event\" : {\t\t\"receiverAddress\":\"XNPAFRPP\",\t\t\"messageType\":{\t\t\t\"code\":\"MT012\"\t\t},\t\t\"TRN\":\"Test\",\t\t\"document\":{\t\t\t\"data\":\"r{4:5103:EBA7{5:6\"\t\t}\t}}"
+curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/services/rest/server/containers/swift-router_1.0.0-SNAPSHOT/dmn/models/router/dmnresult" -H "accept: application/json" -H "content-type: application/json" -d "{\"model-namespace\": \"https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF\",\"model-name\": \"router\",\t\"event\":{\t\t\"direction\":\"DISTRIBUTION\",\t\t\"networkProtocol\":\"Swift-FIN\",\t\t\"receiverAddress\":\"GEBABEBBAAA\",\t\t\"senderAddress\":\"ECMSBEBBCCB\",\t\t\"messageType\":{\t\t\t\"code\":\"MT598\"\t\t},\t\t\"document\":{\t\t\t\"data\":\"55{4:33:20C:AA4444//BKL111{5:RE\"\t\t}\t}}"
 ```
 
-### build & deploy decisions services as microservices 
+### build & deploy decisions services
 
 build and deploy Quarkus Kogito decision service
 ```
@@ -386,7 +450,7 @@ mvn clean fabric8:deploy -Popenshift -DskipTests
 
 ### build & deploy remote client 
 
-In order to test each service (Springboot and Quarkus implementation), deploy a Quarkus remote client application. The decision service is called x times, all results are produced into topic kafka 
+
 
 get decisions services routes
 ```
@@ -404,6 +468,10 @@ build and deploy quarkus rest client to call the quarkus decision service
  cd ../swift-router-remote-client
  mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-router-remote-client   
 ```
+
+to test Springboot and Quarkus decision services , deploy a kubernetes Job that will call   
+
+The decision service is called x times, all results are produced into topic kafka 
 
 ### build & deploy Kafka producer/processor applications 
 build and deploy producer
