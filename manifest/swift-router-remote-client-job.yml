@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: swift-router-remote-client-quarkus-job
-  namespace: swift-router
+  namespace: swift-router-prod
 spec:
   selector: {}
   template:
@@ -12,12 +12,11 @@ spec:
       parallelism: 1 
       containers:
         - name: swift-router-remote-client
-          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:a9e1e2661606428d18767943d5cb0614fbbba3267bb1ef106a614f83a16913bc
+          image: image-registry.openshift-image-registry.svc:5000/swift-router-prod/swift-router-remote-client@sha256:5c9d37c9f668f468626cd9a8da044a9b11249e75ca782710ab8d5e1b2cd8e632
           command:
             - java
             - '-Dquarkus.http.host=0.0.0.0'
             - '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
-            - '-Dquarkus.args="1000 quarkus"'
             - '-jar'
             - /deployments/quarkus-run.jar
           env:
@@ -37,14 +36,18 @@ spec:
                   name: swift-router-cm
                   key: KAFKA_BOOTSTRAP_SERVERS
             - name: JAVA_APP_JAR
-              value: /deployments/quarkus-run.jar            
+              value: /deployments/quarkus-run.jar
+            - name: NB_MESSAGES
+              value: '1000'
+            - name: SERVICE_TYPE
+              value: 'quarkus'   
       restartPolicy: Never
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: swift-router-remote-client-springboot-job
-  namespace: swift-router
+  namespace: swift-router-prod
 spec:
   selector: {}
   template:
@@ -54,12 +57,11 @@ spec:
       parallelism: 1 
       containers:
         - name: swift-router-remote-client
-          image: image-registry.openshift-image-registry.svc:5000/swift-router/swift-rest-quarkus-client@sha256:a9e1e2661606428d18767943d5cb0614fbbba3267bb1ef106a614f83a16913bc
+          image: image-registry.openshift-image-registry.svc:5000/swift-router-prod/swift-router-remote-client@sha256:5c9d37c9f668f468626cd9a8da044a9b11249e75ca782710ab8d5e1b2cd8e632
           command:
             - java
             - '-Dquarkus.http.host=0.0.0.0'
             - '-Djava.util.logging.manager=org.jboss.logmanager.LogManager'
-            - '-Dquarkus.args="1000 springboot"'
             - '-jar'
             - /deployments/quarkus-run.jar
           env:
@@ -68,7 +70,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: metadata.namespace
-            - name: SPRINGBOOT_URL
+            - name: SWIFTSPRINGBOOT_URL
               valueFrom:
                 configMapKeyRef:
                   name: swift-router-cm
@@ -78,6 +80,10 @@ spec:
                 configMapKeyRef:
                   name: swift-router-cm
                   key: KAFKA_BOOTSTRAP_SERVERS
+            - name: NB_MESSAGES
+              value: '1000'
+            - name: SERVICE_TYPE
+              value: 'springboot'
             - name: JAVA_APP_JAR
               value: /deployments/quarkus-run.jar            
       restartPolicy: Never

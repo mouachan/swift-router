@@ -158,18 +158,18 @@ the response should be
   ]
 }
 ```
-#### massive http call
+#### http call
 
-swift-router-remote-client application invoke x times the swift-router decision service (quarkus or springboot), to specify the number of call and the type of service use (in the examples x = 1000) :
+swift-router-remote-client application invoke x times the swift-router decision service (quarkus or springboot), to specify the number of call and the type of service use the following arguments:
 `-Dquarkus.args="1000 springboot"`or `-Dquarkus.args="1000 quarkus"`
 
-the following example invoke springboot decision service 1000 times, insert the result of each call into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
+the following example invoke springboot decision service 1000 times, the result of each call is inserted into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
 ```
 cd ../swift-router-remote-client
 mvn clean compile quarkus:dev -Dquarkus.args="1000 springboot"
 ```
 
-the following example invoke quarkus decision service 1000 times, insert the result of each call into a topic kafka named `sbCodeRoutage` (and the elapsed time) 
+the following example invoke quarkus decision service 1000 times, the result of each call is inserted into a topic kafka named `qCodeRoutage` (and the elapsed time) 
 ```
 cd ../swift-router-remote-client
 mvn clean compile quarkus:dev -Dquarkus.args="1000 quarkus"
@@ -196,8 +196,8 @@ $ mvn clean compile quarkus:dev
 ```
 
 to genrate an event go to http://localhost:8680/swift.html page and click on `Request Router Code`;
-the producer apps will generate a random message into `swift-requests` topic; the processor consume the message, invoke the decision service and write the result in the `codeRoutage` topic;
-from the swift interface (http://localhost:8680/swift.html), `Pending` text will be replaced with the calculated codes
+the producer apps will generate a random message into `swift-requests` topic; the processor consume the message, invoke the decision service and write the result into the `codeRoutage` topic;
+from the swift interface (http://localhost:8680/swift.html), `Pending` text will be replaced by the calculated codes
 
 ## Deploy on openshift
 
@@ -206,26 +206,27 @@ log into openshift
 https://api.openshift_url:6443 -u login -p password 
 ```
 
-create a dev and prod environment
+create a dev, test and prod environment
 ```
 $ oc new-project swift-router-dev
+$ oc new-project swift-router-test
 $ oc new-project swift-router-prod  
 ```
 from OperatorHub install on swift-router-dev environment (namespace):
   - Red Hat Business Automation Operator
 
-from OperatorHub install on swift-router-prod environment (namespace):
+from OperatorHub install on swift-router-test and swift-router-prod environments (namespaces):
 
   - Red Hat Grafana Operator
   - Red Hat Integration - AMQ Streams Operator
 
-### Configure kafka (on production environment)
+### Configure kafka (on test and production environments)
 create kafka cluster
 ```
 $ oc apply -f ./manifest/kafka.yml
 kafka.kafka.strimzi.io/swift-cluster created
 ```
-wait un til the kafka cluster is up and running 
+wait until the kafka cluster is up and running 
 ```
 $ oc get kafka
 NAME            DESIRED KAFKA REPLICAS   DESIRED ZK REPLICAS   READY   WARNINGS
@@ -252,6 +253,7 @@ swift-router-decision-service-springboot-monitor   78s
 create grafana instance
 ```
 $ oc apply -f ./manifest/grafana-instance.yml
+wait until the grafana instance is `success`
 $ oc get grafana -o json | jq '.items[0].status.message'
 "success"
 ```
@@ -286,9 +288,12 @@ in the below YAML, substitute ${BEARER_TOKEN} with the output of the command abo
         url: 'https://thanos-querier.openshift-monitoring.svc.cluster.local:9091'
     name: grafana-prometheus-datasource
 ```
-copy the YAML in ../manifest/grafana-datasource.yml file
+copy the YAML in ../manifest/grafana-datasource.yml file and create the datasource
 ```
 $ oc apply -f ./manifest/grafana-datasource.yml
+```
+Then create the dashboard
+```
 $ oc apply -f ./manifest/grafana-dashboard-operational.yml
 ```
 
@@ -432,6 +437,7 @@ Response
 ```
 
 or use the command curl
+
 ```
 curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.apps.cluster-8tqhw.8tqhw.sandbox1544.opentlc.com/services/rest/server/containers/swift-router_1.0.0-SNAPSHOT/dmn/models/router/dmnresult" 
 -H "accept: application/json" -H "content-type: application/json" 
@@ -453,32 +459,39 @@ curl -X POST "https://swift-router-svc-design-time-kieserver-swift-router-dev.ap
     }"
 ```
 
-### build & deploy decisions services
+### build & deploy decisions services in prod environment
+
+```
+oc project swift-router-prod
+```
 
 build and deploy Quarkus Kogito decision service
 ```
-cd swift-router-kogito-quarkus
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+cd swift-router-decision-service-quarkus
+mvn clean package -Dquarkus.kubernetes.deploy=true                                                                                   
 ```       
 build and deploy Springboot Kogito decision service 
 ```
-cd ../swift-router-kogito-springboot
+cd ../swift-router-decision-service-springboot
 mvn clean fabric8:deploy -Popenshift -DskipTests
+
+if you want to test manually each service, use the swagger-ui
+
+Quarkus : http://swift-router-decision-service-quarkus-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com/q/swagger-ui/
+Springboot : http://swift-router-decision-service-springboot-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/springboot-metrics-resource
 ```  
 
-### build & deploy remote client 
+### build & deploy clients in prod environment
 
-
-
-get decisions services routes
+create a properties file containing decisions services endpoints & kafka cluster bootstrap
 ```
-rm ../manifest/swift-cm.properties
-echo "SwiftQuarkus_URL=https://$(oc get route swift-router-kogito-quarkus --template={{.spec.host}})" >! ../manifest/swift-cm.properties
-echo "SwiftSpringBoot_URL=https://$(oc get route swift-router-kogito-springboot --template={{.spec.host}})" >> ../manifest/swift-cm.properties
+echo "SwiftQuarkus_URL=http://$(oc get route swift-router-decision-service-quarkus --template={{.spec.host}})" > /tmp/swift-cm.properties
+echo "SwiftSpringBoot_URL=http://$(oc get route swift-router-decision-service-springboot --template={{.spec.host}})" >> /tmp/swift-cm.properties
+echo "KAFKA_BOOTSTRAP_SERVERS=swift-cluster-kafka-bootstrap:9092" >> /tmp/swift-cm.properties
 ```
-create a configmap containing 
+create a configmap containing decisions services Urls  
 ```
-oc create configmap swift-router-cm --from-env-file=../manifest/swift-cm.properties --dry-run -o yaml | oc apply -f -   
+oc create configmap swift-router-cm --from-env-file=/tmp/swift-cm.properties --dry-run=client -o yaml | oc apply -f -   
 ```
 
 build and deploy quarkus rest client to call the quarkus decision service
@@ -486,31 +499,81 @@ build and deploy quarkus rest client to call the quarkus decision service
  cd ../swift-router-remote-client
  mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.labels.app-with-metrics=swift-router-remote-client   
 ```
+then change the number of replicas to 0
+```
+oc scale dc swift-router-remote-client --replicas=0 
+```
+get the image url of swift-router-remote-client
+```
+oc get dc swift-router-remote-client -o=jsonpath='{$.spec.template.spec.containers[:1].image}' 
+image-registry.openshift-image-registry.svc:5000/swift-router-prod/swift-router-remote-client@sha256:e100c55534daf36f0c8a52e756539b18c8645de738b5231bdcadd780bddca69d
+```
 
-to test Springboot and Quarkus decision services , deploy a kubernetes Job that will call   
+replace the  2 occurences (line 15 and 57) of ${IMAGE_SWIFT_ROUTE_REMOTE_CLIENT}  by the image url found beforein  ../manifest/swift-router-remote-client-job.yml 
+to test Quarkus and Springboot decision services, deploy 2 kubernetes Jobs. Each job call the decision service 1000 times, all results are produced into kafka topics `sbCodeRoutage` for springboot and `qCodeRoutage`for quarkus
+```
+oc apply -f ../manifest/swift-router-remote-client-job.yml
+```
+use kafdrop to check the calculated messages (use http instead of https)
+```
+oc get route kafdrop
+NAME      HOST/PORT                                                                    PATH   SERVICES   PORT   TERMINATION   WILDCARD
+kafdrop   kafdrop-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com          kafdrop    9000                 None
+```
+From kafdrop UI, click on `qCodeRoutage` topic, then on "view message", put 999 into Offset and click on `View Messages` button 
+![quarkus remote call](./assets/quarkusRemoteCall.png) 
+the calculated code is `CAL06`
+the invoked service is `Quarkus`, as expected the number of messages is `1000` and the elapsed time is `5.453s`
+```json
+{
+   "service type": "quarkus-remote",
+   "nb messages": 1000,
+   "elapsedtime": 5.453
+}
+```
+to view the other calculated codes, change the offset to 0 (you should have 1001 messages)
 
-The decision service is called x times, all results are produced into topic kafka 
-
+From kafdrop UI, click on if ypu click on `sbCodeRoutage` topic 
+![quarkus remote call](./assets/springbootRemoteCall.png) 
+the calculated code is `CAL06`
+the invoked service is `SpringBoot`, as expected the number of messages is `1000` and the elapsed time is `5.453s`
+```json
+{
+   "service type": "springboot-remote",
+   "nb messages": 1000,
+   "elapsedtime": 9.414
+}
+```
 ### build & deploy Kafka producer/processor applications 
 build and deploy producer
 ```
-cd ../swift-producer
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+cd ../swift-router-producer
+mvn clean package -Dquarkus.kubernetes.deploy=true
 ```  
 
 build and deploy processor
 ```
-cd ../swift-processor
-mvn clean package -Dquarkus.kubernetesdeploy=true                                                                                   
+cd ../swift-router-processor
+mvn clean package -Dquarkus.kubernetes.deploy=true
 ```  
 
+get the route of the producer
+```
+oc get route swift-router-producer
+NAME                    HOST/PORT                                                                                          PATH   SERVICES                PORT   TERMINATION   WILDCARD
+swift-router-producer   swift-router-producer-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com          swift-router-producer   8680                 None
+```
+to genrate an event go to http://swift-router-producer-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com//swift.html page and click on `Request Router Code`;
+the producer apps will generate a random message into `swift-requests` topic; the processor consume the message, invoke the decision service and write the result into the `codeRoutage` topic;
+from the swift interface (http://swift-router-producer-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc.com//swift.html), `Pending` text will be replaced by the calculated codes
 
-### Run and monitor 
+![streaming UI](./assets/streaming-ui.png) 
+
+### Monitor 
 
 #### HTTP Remote call 
 
 
-.... add job sections to run all applications
 
 Do some http call to the quarkus/springboot decision service, log into grafana, select the dashboard `router - Operational Dashboard` 
 
