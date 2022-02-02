@@ -522,6 +522,7 @@ kafdrop   kafdrop-swift-router-prod.apps.cluster-jrhcl.jrhcl.sandbox1672.opentlc
 ```
 From kafdrop UI, click on `qCodeRoutage` topic, then on "view message", put 999 into Offset and click on `View Messages` button 
 ![quarkus remote call](./assets/quarkusRemoteCall.png) 
+  
 the calculated code is `CAL06`
 the invoked service is `Quarkus`, as expected the number of messages is `1000` and the elapsed time is `5.453s`
 ```json
@@ -534,7 +535,7 @@ the invoked service is `Quarkus`, as expected the number of messages is `1000` a
 to view the other calculated codes, change the offset to 0 (you should have 1001 messages)
 
 From kafdrop UI, click on if ypu click on `sbCodeRoutage` topic 
-![quarkus remote call](./assets/springbootRemoteCall.png) 
+![springboot remote call](./assets/springbootRemoteCall.png) 
 the calculated code is `CAL06`
 the invoked service is `SpringBoot`, as expected the number of messages is `1000` and the elapsed time is `5.453s`
 ```json
