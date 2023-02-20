@@ -1,0 +1,9 @@
+schemaVersion: 2.1.0
+metadata:
+  name: swift-router
+  version: 1.0.0
+projects:
+  - name: swift-router
+    git:
+      remotes:
+        origin: 'https://github.com/mouachan/swift-router.git'
