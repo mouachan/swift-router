@@ -95,6 +95,7 @@ components:
       env:
         - name: PATH
           value: '/tmp/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+    
 commands:
   - id: model-install
     exec:
